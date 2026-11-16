@@ -1,0 +1,85 @@
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{5F017911-F381-4D14-BB22-60CB3167F031}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>ClinicaTurnos.Web</RootNamespace>
+    <AssemblyName>ClinicaTurnos.Web</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <LangVersion>7.3</LangVersion>
+    <ProjectTypeGuids>{349C5851-65DF-11DA-9384-00065B846F21};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <UseIISExpress>true</UseIISExpress>
+    <Use64BitIISExpress>true</Use64BitIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
+    <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols><DebugType>full</DebugType><Optimize>false</Optimize>
+    <OutputPath>bin/</OutputPath><DefineConstants>DEBUG;TRACE</DefineConstants><WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType><Optimize>true</Optimize>
+    <OutputPath>bin/</OutputPath><DefineConstants>TRACE</DefineConstants><WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Default.aspx.cs"><DependentUpon>Default.aspx</DependentUpon><SubType>ASPXCodeBehind</SubType></Compile>
+    <Compile Include="Default.aspx.designer.cs"><DependentUpon>Default.aspx</DependentUpon></Compile>
+    <Compile Include="EspecialidadAlta.aspx.cs"><DependentUpon>EspecialidadAlta.aspx</DependentUpon><SubType>ASPXCodeBehind</SubType></Compile>
+    <Compile Include="EspecialidadAlta.aspx.designer.cs"><DependentUpon>EspecialidadAlta.aspx</DependentUpon></Compile>
+    <Compile Include="Especialidades.aspx.cs"><DependentUpon>Especialidades.aspx</DependentUpon><SubType>ASPXCodeBehind</SubType></Compile>
+    <Compile Include="Especialidades.aspx.designer.cs"><DependentUpon>Especialidades.aspx</DependentUpon></Compile>
+    <Compile Include="PacienteAlta.aspx.cs"><DependentUpon>PacienteAlta.aspx</DependentUpon><SubType>ASPXCodeBehind</SubType></Compile>
+    <Compile Include="PacienteAlta.aspx.designer.cs"><DependentUpon>PacienteAlta.aspx</DependentUpon></Compile>
+    <Compile Include="Pacientes.aspx.cs"><DependentUpon>Pacientes.aspx</DependentUpon><SubType>ASPXCodeBehind</SubType></Compile>
+    <Compile Include="Pacientes.aspx.designer.cs"><DependentUpon>Pacientes.aspx</DependentUpon></Compile>
+    <Compile Include="PaginaBase.cs" />
+    <Compile Include="Site.Master.cs"><DependentUpon>Site.Master</DependentUpon><SubType>ASPXCodeBehind</SubType></Compile>
+    <Compile Include="Site.Master.designer.cs"><DependentUpon>Site.Master</DependentUpon></Compile>
+    <Content Include="Content\Sitio.css" />
+    <Content Include="Default.aspx" />
+    <Content Include="EspecialidadAlta.aspx" />
+    <Content Include="Especialidades.aspx" />
+    <Content Include="PacienteAlta.aspx" />
+    <Content Include="Pacientes.aspx" />
+    <Content Include="Site.Master" />
+    <Content Include="Web.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ClinicaTurnos.Dominio\ClinicaTurnos.Dominio.csproj"><Project>{585A7943-4605-48A6-B11E-F8EAE89994E2}</Project><Name>ClinicaTurnos.Dominio</Name></ProjectReference>
+    <ProjectReference Include="..\ClinicaTurnos.Negocio\ClinicaTurnos.Negocio.csproj"><Project>{8F053D17-3DA3-4FA6-9C13-FBBE30533879}</Project><Name>ClinicaTurnos.Negocio</Name></ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">17.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349C5851-65DF-11DA-9384-00065B846F21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>False</AutoAssignPort>
+          <DevelopmentServerPort>51840</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:51840/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

@@ -1,0 +1,25 @@
+<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.Master.cs" Inherits="ClinicaTurnos.Web.Site" %>
+<!DOCTYPE html>
+<html lang="es">
+<head runat="server">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Clínica médica</title>
+    <link href="~/Content/Sitio.css" rel="stylesheet" runat="server" />
+</head>
+<body>
+    <form id="formPrincipal" runat="server">
+        <header>
+            <h2>Clínica médica</h2>
+            <nav>
+                <a href="<%= ResolveUrl("~/Default.aspx") %>">Inicio</a>
+                <a href="<%= ResolveUrl("~/Pacientes.aspx") %>">Pacientes</a>
+                <a href="<%= ResolveUrl("~/Especialidades.aspx") %>">Especialidades</a>
+            </nav>
+        </header>
+        <main>
+            <asp:ContentPlaceHolder ID="ContenidoPrincipal" runat="server" />
+        </main>
+    </form>
+</body>
+</html>

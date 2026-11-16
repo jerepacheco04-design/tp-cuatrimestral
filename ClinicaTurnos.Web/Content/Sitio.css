@@ -1,0 +1,19 @@
+body { font-family: Arial, sans-serif; font-size: 14px; color: #222; background: white; margin: 24px; }
+header { border-bottom: 1px solid #aaa; padding-bottom: 12px; margin-bottom: 24px; }
+header h2 { margin: 0 0 12px; }
+nav a { margin-right: 18px; }
+h1 { font-size: 24px; }
+.tabla { border-collapse: collapse; margin-top: 18px; }
+.tabla th, .tabla td { border: 1px solid #aaa; padding: 8px; text-align: left; }
+.tabla th { background: #eee; }
+.tabla-contenedor { overflow-x: auto; }
+.campo { margin-bottom: 14px; }
+.campo label { display: block; margin-bottom: 4px; }
+input[type=text], input[type=email], input[type=date], textarea { box-sizing: border-box; width: 320px; max-width: 100%; padding: 5px; font: inherit; }
+input[type=submit] { padding: 5px 12px; cursor: pointer; }
+.acciones { margin-top: 18px; }
+.acciones a { margin-left: 12px; }
+.aviso, .validacion, .resumen { color: #a00000; }
+.aviso { display: block; margin: 12px 0; }
+.aviso:empty { display: none; }
+.exito { color: #176024; }
