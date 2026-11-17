@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -36,12 +35,36 @@ namespace ClinicaTurnos.Negocio.Datos
             return especialidades;
         }
 
-        public bool ExisteNombre(string nombre)
+        public Especialidad Obtener(int id)
         {
             using (SqlConnection conexion = new SqlConnection(cadenaConexion))
-            using (SqlCommand comando = new SqlCommand("SELECT COUNT(*) FROM dbo.Especialidades WHERE Nombre = @Nombre", conexion))
+            using (SqlCommand comando = new SqlCommand("SELECT Id, Nombre FROM dbo.Especialidades WHERE Id = @Id", conexion))
+            {
+                comando.Parameters.Add("@Id", SqlDbType.Int).Value = id;
+                conexion.Open();
+                using (SqlDataReader lector = comando.ExecuteReader())
+                {
+                    if (lector.Read())
+                    {
+                        return new Especialidad
+                        {
+                            Id = (int)lector["Id"],
+                            Nombre = (string)lector["Nombre"]
+                        };
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        public bool ExisteNombre(string nombre, int idExcluir)
+        {
+            using (SqlConnection conexion = new SqlConnection(cadenaConexion))
+            using (SqlCommand comando = new SqlCommand("SELECT COUNT(*) FROM dbo.Especialidades WHERE UPPER(Nombre) = UPPER(@Nombre) AND Id <> @Id", conexion))
             {
                 comando.Parameters.Add("@Nombre", SqlDbType.NVarChar, 80).Value = nombre;
+                comando.Parameters.Add("@Id", SqlDbType.Int).Value = idExcluir;
                 conexion.Open();
                 return (int)comando.ExecuteScalar() > 0;
             }
@@ -58,5 +81,27 @@ namespace ClinicaTurnos.Negocio.Datos
             }
         }
 
+        public void Modificar(Especialidad especialidad)
+        {
+            using (SqlConnection conexion = new SqlConnection(cadenaConexion))
+            using (SqlCommand comando = new SqlCommand("UPDATE dbo.Especialidades SET Nombre = @Nombre WHERE Id = @Id", conexion))
+            {
+                comando.Parameters.Add("@Id", SqlDbType.Int).Value = especialidad.Id;
+                comando.Parameters.Add("@Nombre", SqlDbType.NVarChar, 80).Value = especialidad.Nombre;
+                conexion.Open();
+                comando.ExecuteNonQuery();
+            }
+        }
+
+        public void Eliminar(int id)
+        {
+            using (SqlConnection conexion = new SqlConnection(cadenaConexion))
+            using (SqlCommand comando = new SqlCommand("DELETE FROM dbo.Especialidades WHERE Id = @Id", conexion))
+            {
+                comando.Parameters.Add("@Id", SqlDbType.Int).Value = id;
+                conexion.Open();
+                comando.ExecuteNonQuery();
+            }
+        }
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Data.SqlClient;
+using System.Web.UI.WebControls;
 using ClinicaTurnos.Negocio;
 
 namespace ClinicaTurnos.Web
@@ -16,16 +17,53 @@ namespace ClinicaTurnos.Web
                     lblMensaje.CssClass = "aviso exito";
                     Session.Remove("Mensaje");
                 }
-                try
-                {
-                    grilla.DataSource = new EspecialidadNegocio().Listar();
-                    grilla.DataBind();
-                }
-                catch (SqlException)
-                {
-                    lblMensaje.CssClass = "aviso";
-                    lblMensaje.Text = "No se pudieron cargar los datos. Revisá la conexión a la base de datos.";
-                }
+
+                CargarEspecialidades();
+            }
+        }
+
+        protected void grilla_RowCommand(object sender, GridViewCommandEventArgs e)
+        {
+            if (e.CommandName != "Eliminar")
+            {
+                return;
+            }
+
+            int id;
+            if (!int.TryParse(Convert.ToString(e.CommandArgument), out id) || id <= 0)
+            {
+                lblMensaje.Text = "No se pudo identificar la especialidad seleccionada.";
+                return;
+            }
+
+            try
+            {
+                new EspecialidadNegocio().Eliminar(id);
+                Session["Mensaje"] = "Especialidad eliminada correctamente.";
+                Response.Redirect("Especialidades.aspx");
+            }
+            catch (ArgumentException ex)
+            {
+                lblMensaje.Text = Server.HtmlEncode(ex.Message);
+            }
+            catch (SqlException)
+            {
+                lblMensaje.CssClass = "aviso";
+                lblMensaje.Text = "No se pudo eliminar la especialidad. Revisá la conexión a la base de datos.";
+            }
+        }
+
+        private void CargarEspecialidades()
+        {
+            try
+            {
+                grilla.DataSource = new EspecialidadNegocio().Listar();
+                grilla.DataBind();
+            }
+            catch (SqlException)
+            {
+                lblMensaje.CssClass = "aviso";
+                lblMensaje.Text = "No se pudieron cargar los datos. Revisá la conexión a la base de datos.";
             }
         }
     }
