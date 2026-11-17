@@ -13,8 +13,40 @@ namespace ClinicaTurnos.Negocio
             return new PacienteDatos().Listar();
         }
 
+        public Paciente Obtener(int id)
+        {
+            ValidarId(id);
+            return new PacienteDatos().Obtener(id);
+        }
+
         public void Agregar(Paciente paciente)
         {
+            ValidarPaciente(paciente, 0);
+            new PacienteDatos().Agregar(paciente);
+        }
+
+        public void Modificar(Paciente paciente)
+        {
+            if (paciente == null) throw new ArgumentException("El paciente es obligatorio.");
+            ValidarId(paciente.Id);
+            ValidarPaciente(paciente, paciente.Id);
+            new PacienteDatos().Modificar(paciente);
+        }
+
+        public void Eliminar(int id)
+        {
+            ValidarId(id);
+            new PacienteDatos().Eliminar(id);
+        }
+
+        private void ValidarId(int id)
+        {
+            if (id <= 0) throw new ArgumentException("El paciente seleccionado no es válido.");
+        }
+
+        private void ValidarPaciente(Paciente paciente, int idExcluir)
+        {
+            if (paciente == null) throw new ArgumentException("El paciente es obligatorio.");
             paciente.Dni = (paciente.Dni ?? "").Trim();
             paciente.Nombre = (paciente.Nombre ?? "").Trim();
             paciente.Apellido = (paciente.Apellido ?? "").Trim();
@@ -36,9 +68,8 @@ namespace ClinicaTurnos.Negocio
             if (paciente.Direccion.Length > 250)
                 throw new ArgumentException("La dirección admite hasta 250 caracteres.");
             PacienteDatos datos = new PacienteDatos();
-            if (datos.ExisteDni(paciente.Dni))
+            if (datos.ExisteDni(paciente.Dni, idExcluir))
                 throw new ArgumentException("Ya existe un paciente con ese DNI.");
-            datos.Agregar(paciente);
         }
 
     }

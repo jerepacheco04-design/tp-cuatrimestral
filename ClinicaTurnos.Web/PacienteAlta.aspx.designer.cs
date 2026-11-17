@@ -2,6 +2,7 @@ namespace ClinicaTurnos.Web
 {
     public partial class PacienteAlta
     {
+        protected global::System.Web.UI.WebControls.Literal litTitulo;
         protected global::System.Web.UI.WebControls.Label lblMensaje;
         protected global::System.Web.UI.WebControls.Panel pnlFormulario;
         protected global::System.Web.UI.WebControls.ValidationSummary resumen;

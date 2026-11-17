@@ -1,7 +1,7 @@
 <%@ Page Title="Paciente | Clínica médica" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="PacienteAlta.aspx.cs" Inherits="ClinicaTurnos.Web.PacienteAlta" %>
 <asp:Content ID="contenido" ContentPlaceHolderID="ContenidoPrincipal" runat="server">
     <a href="Pacientes.aspx">Volver a pacientes</a>
-    <h1>Agregar paciente</h1>
+    <h1><asp:Literal ID="litTitulo" runat="server" Text="Agregar paciente" /></h1>
     <p>Los campos marcados con * son obligatorios.</p>
     <asp:Label ID="lblMensaje" runat="server" CssClass="aviso" role="alert" />
     <asp:Panel ID="pnlFormulario" runat="server" DefaultButton="btnGuardar">

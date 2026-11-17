@@ -59,12 +59,69 @@ namespace ClinicaTurnos.Negocio.Datos
             }
         }
 
-        public bool ExisteDni(string dni)
+        public Paciente Obtener(int id)
         {
             using (SqlConnection conexion = new SqlConnection(cadenaConexion))
-            using (SqlCommand comando = new SqlCommand("SELECT COUNT(*) FROM dbo.Pacientes WHERE Dni = @Dni", conexion))
+            using (SqlCommand comando = new SqlCommand("SELECT Id, Dni, Nombre, Apellido, FechaNacimiento, Telefono, Email, Direccion FROM dbo.Pacientes WHERE Id = @Id", conexion))
+            {
+                comando.Parameters.Add("@Id", SqlDbType.Int).Value = id;
+                conexion.Open();
+                using (SqlDataReader lector = comando.ExecuteReader())
+                {
+                    if (!lector.Read()) return null;
+                    return new Paciente
+                    {
+                        Id = (int)lector["Id"],
+                        Dni = (string)lector["Dni"],
+                        Nombre = (string)lector["Nombre"],
+                        Apellido = (string)lector["Apellido"],
+                        FechaNacimiento = (DateTime)lector["FechaNacimiento"],
+                        Telefono = (string)lector["Telefono"],
+                        Email = (string)lector["Email"],
+                        Direccion = (string)lector["Direccion"]
+                    };
+                }
+            }
+        }
+
+        public void Modificar(Paciente paciente)
+        {
+            using (SqlConnection conexion = new SqlConnection(cadenaConexion))
+            using (SqlCommand comando = new SqlCommand("UPDATE dbo.Pacientes SET Dni = @Dni, Nombre = @Nombre, Apellido = @Apellido, FechaNacimiento = @FechaNacimiento, Telefono = @Telefono, Email = @Email, Direccion = @Direccion WHERE Id = @Id", conexion))
+            {
+                comando.Parameters.Add("@Id", SqlDbType.Int).Value = paciente.Id;
+                comando.Parameters.Add("@Dni", SqlDbType.NVarChar, 20).Value = paciente.Dni;
+                comando.Parameters.Add("@Nombre", SqlDbType.NVarChar, 80).Value = paciente.Nombre;
+                comando.Parameters.Add("@Apellido", SqlDbType.NVarChar, 80).Value = paciente.Apellido;
+                comando.Parameters.Add("@FechaNacimiento", SqlDbType.Date).Value = paciente.FechaNacimiento.Date;
+                comando.Parameters.Add("@Telefono", SqlDbType.NVarChar, 30).Value = paciente.Telefono;
+                comando.Parameters.Add("@Email", SqlDbType.NVarChar, 254).Value = paciente.Email;
+                comando.Parameters.Add("@Direccion", SqlDbType.NVarChar, 250).Value = paciente.Direccion;
+                conexion.Open();
+                if (comando.ExecuteNonQuery() == 0)
+                    throw new InvalidOperationException("El paciente ya no existe. Volvé al listado.");
+            }
+        }
+
+        public void Eliminar(int id)
+        {
+            using (SqlConnection conexion = new SqlConnection(cadenaConexion))
+            using (SqlCommand comando = new SqlCommand("DELETE FROM dbo.Pacientes WHERE Id = @Id", conexion))
+            {
+                comando.Parameters.Add("@Id", SqlDbType.Int).Value = id;
+                conexion.Open();
+                if (comando.ExecuteNonQuery() == 0)
+                    throw new InvalidOperationException("El paciente ya no existe. Volvé al listado.");
+            }
+        }
+
+        public bool ExisteDni(string dni, int idExcluir)
+        {
+            using (SqlConnection conexion = new SqlConnection(cadenaConexion))
+            using (SqlCommand comando = new SqlCommand("SELECT COUNT(*) FROM dbo.Pacientes WHERE Dni = @Dni AND Id <> @Id", conexion))
             {
                 comando.Parameters.Add("@Dni", SqlDbType.NVarChar, 20).Value = dni;
+                comando.Parameters.Add("@Id", SqlDbType.Int).Value = idExcluir;
                 conexion.Open();
                 return (int)comando.ExecuteScalar() > 0;
             }
