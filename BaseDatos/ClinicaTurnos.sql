@@ -53,3 +53,30 @@ BEGIN
     );
 END
 GO
+IF OBJECT_ID(N'dbo.Medicos', N'U') IS NULL
+BEGIN
+    CREATE TABLE dbo.Medicos
+    (
+        Id int IDENTITY(1,1) PRIMARY KEY,
+        Nombre nvarchar(80) NOT NULL,
+        Apellido nvarchar(80) NOT NULL,
+        Email nvarchar(254) NOT NULL,
+        Matricula nvarchar(30) NOT NULL,
+        TurnoTrabajoId int NOT NULL,
+        CONSTRAINT UQ_Medicos_Matricula UNIQUE (Matricula),
+        CONSTRAINT FK_Medicos_TurnosTrabajo FOREIGN KEY (TurnoTrabajoId) REFERENCES dbo.TurnosTrabajo(Id)
+    );
+END
+GO
+IF OBJECT_ID(N'dbo.MedicosEspecialidades', N'U') IS NULL
+BEGIN
+    CREATE TABLE dbo.MedicosEspecialidades
+    (
+        MedicoId int NOT NULL,
+        EspecialidadId int NOT NULL,
+        CONSTRAINT PK_MedicosEspecialidades PRIMARY KEY (MedicoId, EspecialidadId),
+        CONSTRAINT FK_MedicosEspecialidades_Medicos FOREIGN KEY (MedicoId) REFERENCES dbo.Medicos(Id) ON DELETE CASCADE,
+        CONSTRAINT FK_MedicosEspecialidades_Especialidades FOREIGN KEY (EspecialidadId) REFERENCES dbo.Especialidades(Id)
+    );
+END
+GO

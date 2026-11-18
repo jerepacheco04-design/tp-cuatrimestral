@@ -27,9 +27,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Datos\EspecialidadDatos.cs" />
+    <Compile Include="Datos\MedicoDatos.cs" />
     <Compile Include="Datos\PacienteDatos.cs" />
     <Compile Include="Datos\TurnoTrabajoDatos.cs" />
     <Compile Include="EspecialidadNegocio.cs" />
+    <Compile Include="MedicoNegocio.cs" />
     <Compile Include="PacienteNegocio.cs" />
     <Compile Include="TurnoTrabajoNegocio.cs" />
   </ItemGroup>

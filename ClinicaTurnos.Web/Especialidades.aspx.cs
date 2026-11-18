@@ -46,10 +46,12 @@ namespace ClinicaTurnos.Web
             {
                 lblMensaje.Text = Server.HtmlEncode(ex.Message);
             }
-            catch (SqlException)
+            catch (SqlException ex)
             {
                 lblMensaje.CssClass = "aviso";
-                lblMensaje.Text = "No se pudo eliminar la especialidad. Revisá la conexión a la base de datos.";
+                lblMensaje.Text = ex.Number == 547
+                    ? "No se puede eliminar la especialidad porque tiene médicos asignados."
+                    : "No se pudo eliminar la especialidad. Revisá la conexión a la base de datos.";
             }
         }
 
