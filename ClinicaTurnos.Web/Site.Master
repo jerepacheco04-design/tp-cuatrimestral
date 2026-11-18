@@ -15,6 +15,7 @@
                 <a href="<%= ResolveUrl("~/Default.aspx") %>">Inicio</a>
                 <a href="<%= ResolveUrl("~/Pacientes.aspx") %>">Pacientes</a>
                 <a href="<%= ResolveUrl("~/Especialidades.aspx") %>">Especialidades</a>
+                <a href="<%= ResolveUrl("~/TurnosTrabajo.aspx") %>">Horarios de trabajo</a>
             </nav>
         </header>
         <main>

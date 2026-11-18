@@ -40,6 +40,10 @@
     <Compile Include="EspecialidadAlta.aspx.designer.cs"><DependentUpon>EspecialidadAlta.aspx</DependentUpon></Compile>
     <Compile Include="Especialidades.aspx.cs"><DependentUpon>Especialidades.aspx</DependentUpon><SubType>ASPXCodeBehind</SubType></Compile>
     <Compile Include="Especialidades.aspx.designer.cs"><DependentUpon>Especialidades.aspx</DependentUpon></Compile>
+    <Compile Include="TurnoTrabajoAlta.aspx.cs"><DependentUpon>TurnoTrabajoAlta.aspx</DependentUpon><SubType>ASPXCodeBehind</SubType></Compile>
+    <Compile Include="TurnoTrabajoAlta.aspx.designer.cs"><DependentUpon>TurnoTrabajoAlta.aspx</DependentUpon></Compile>
+    <Compile Include="TurnosTrabajo.aspx.cs"><DependentUpon>TurnosTrabajo.aspx</DependentUpon><SubType>ASPXCodeBehind</SubType></Compile>
+    <Compile Include="TurnosTrabajo.aspx.designer.cs"><DependentUpon>TurnosTrabajo.aspx</DependentUpon></Compile>
     <Compile Include="PacienteAlta.aspx.cs"><DependentUpon>PacienteAlta.aspx</DependentUpon><SubType>ASPXCodeBehind</SubType></Compile>
     <Compile Include="PacienteAlta.aspx.designer.cs"><DependentUpon>PacienteAlta.aspx</DependentUpon></Compile>
     <Compile Include="Pacientes.aspx.cs"><DependentUpon>Pacientes.aspx</DependentUpon><SubType>ASPXCodeBehind</SubType></Compile>
@@ -51,6 +55,8 @@
     <Content Include="Default.aspx" />
     <Content Include="EspecialidadAlta.aspx" />
     <Content Include="Especialidades.aspx" />
+    <Content Include="TurnoTrabajoAlta.aspx" />
+    <Content Include="TurnosTrabajo.aspx" />
     <Content Include="PacienteAlta.aspx" />
     <Content Include="Pacientes.aspx" />
     <Content Include="Site.Master" />

@@ -9,7 +9,8 @@ h1 { font-size: 24px; }
 .tabla-contenedor { overflow-x: auto; }
 .campo { margin-bottom: 14px; }
 .campo label { display: block; margin-bottom: 4px; }
-input[type=text], input[type=email], input[type=date], textarea { box-sizing: border-box; width: 320px; max-width: 100%; padding: 5px; font: inherit; }
+input[type=text], input[type=email], input[type=date], input[type=time], textarea { box-sizing: border-box; width: 320px; max-width: 100%; padding: 5px; font: inherit; }
+.tabla input[type=time] { width: 140px; }
 input[type=submit] { padding: 5px 12px; cursor: pointer; }
 .acciones { margin-top: 18px; }
 .acciones a { margin-left: 12px; }
