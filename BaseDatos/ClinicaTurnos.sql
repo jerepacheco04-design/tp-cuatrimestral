@@ -80,3 +80,21 @@ BEGIN
     );
 END
 GO
+IF OBJECT_ID(N'dbo.Turnos', N'U') IS NULL
+BEGIN
+    CREATE TABLE dbo.Turnos
+    (
+        Id int IDENTITY(1,1) PRIMARY KEY,
+        PacienteId int NOT NULL,
+        MedicoId int NOT NULL,
+        EspecialidadId int NOT NULL,
+        FechaHora datetime2(0) NOT NULL,
+        Estado tinyint NOT NULL CONSTRAINT DF_Turnos_Estado DEFAULT (1),
+        MotivoConsulta nvarchar(500) NOT NULL,
+        ObservacionesDiagnostico nvarchar(1000) NULL,
+        CONSTRAINT FK_Turnos_Pacientes FOREIGN KEY (PacienteId) REFERENCES dbo.Pacientes(Id),
+        CONSTRAINT FK_Turnos_MedicosEspecialidades FOREIGN KEY (MedicoId, EspecialidadId) REFERENCES dbo.MedicosEspecialidades(MedicoId, EspecialidadId),
+        CONSTRAINT CK_Turnos_Estado CHECK (Estado BETWEEN 1 AND 5)
+    );
+END
+GO

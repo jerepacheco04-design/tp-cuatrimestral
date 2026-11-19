@@ -30,10 +30,12 @@
     <Compile Include="Datos\MedicoDatos.cs" />
     <Compile Include="Datos\PacienteDatos.cs" />
     <Compile Include="Datos\TurnoTrabajoDatos.cs" />
+    <Compile Include="Datos\TurnoDatos.cs" />
     <Compile Include="EspecialidadNegocio.cs" />
     <Compile Include="MedicoNegocio.cs" />
     <Compile Include="PacienteNegocio.cs" />
     <Compile Include="TurnoTrabajoNegocio.cs" />
+    <Compile Include="TurnoNegocio.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ClinicaTurnos.Dominio\ClinicaTurnos.Dominio.csproj"><Project>{585A7943-4605-48A6-B11E-F8EAE89994E2}</Project><Name>ClinicaTurnos.Dominio</Name></ProjectReference>

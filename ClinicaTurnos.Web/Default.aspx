@@ -5,5 +5,6 @@
     <ul>
         <li><a href="Pacientes.aspx">Pacientes</a></li>
         <li><a href="Especialidades.aspx">Especialidades</a></li>
+        <li><a href="Turnos.aspx">Turnos</a></li>
     </ul>
 </asp:Content>
