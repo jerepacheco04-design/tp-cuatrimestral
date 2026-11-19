@@ -67,5 +67,73 @@ namespace ClinicaTurnos.Negocio.Datos
 
             return turnos;
         }
+
+        public void Agregar(Turno turno)
+        {
+            using (SqlConnection conexion = new SqlConnection(cadenaConexion))
+            {
+                conexion.Open();
+                using (SqlTransaction transaccion = conexion.BeginTransaction(IsolationLevel.Serializable))
+                {
+                    ValidarDisponibilidad(turno, conexion, transaccion);
+                    string consulta = @"INSERT INTO dbo.Turnos (PacienteId, MedicoId, EspecialidadId, FechaHora, Estado, MotivoConsulta)
+                                        OUTPUT INSERTED.Id VALUES (@Paciente, @Medico, @Especialidad, @FechaHora, @Estado, @Motivo)";
+                    using (SqlCommand comando = new SqlCommand(consulta, conexion, transaccion))
+                    {
+                        comando.Parameters.Add("@Paciente", SqlDbType.Int).Value = turno.Paciente.Id;
+                        comando.Parameters.Add("@Medico", SqlDbType.Int).Value = turno.Medico.Id;
+                        comando.Parameters.Add("@Especialidad", SqlDbType.Int).Value = turno.Especialidad.Id;
+                        comando.Parameters.Add("@FechaHora", SqlDbType.DateTime2).Value = turno.FechaHora;
+                        comando.Parameters.Add("@Estado", SqlDbType.TinyInt).Value = (byte)EstadoTurno.Nuevo;
+                        comando.Parameters.Add("@Motivo", SqlDbType.NVarChar, 500).Value = turno.MotivoConsulta;
+                        int id = (int)comando.ExecuteScalar();
+                        transaccion.Commit();
+                        turno.Id = id;
+                        turno.Estado = EstadoTurno.Nuevo;
+                    }
+                }
+            }
+        }
+
+        private void ValidarDisponibilidad(Turno turno, SqlConnection conexion, SqlTransaction transaccion)
+        {
+            string consultas = @"SELECT CASE
+                                    WHEN NOT EXISTS (SELECT 1 FROM dbo.Pacientes WHERE Id = @Paciente) THEN 1
+                                    WHEN NOT EXISTS (
+                                        SELECT 1 FROM dbo.MedicosEspecialidades
+                                        WHERE MedicoId = @Medico AND EspecialidadId = @Especialidad
+                                    ) THEN 2
+                                    WHEN NOT EXISTS (
+                                        SELECT 1 FROM dbo.Medicos m
+                                        INNER JOIN dbo.FranjasHorarias f ON f.TurnoTrabajoId = m.TurnoTrabajoId
+                                        WHERE m.Id = @Medico AND f.Dia = @Dia
+                                            AND f.HoraEntrada <= @Entrada AND f.HoraSalida >= @Salida
+                                    ) THEN 3
+                                    WHEN EXISTS (
+                                        SELECT 1 FROM dbo.Turnos WITH (UPDLOCK)
+                                        WHERE Estado <> @Cancelado AND FechaHora > @Desde AND FechaHora < @Hasta
+                                            AND (MedicoId = @Medico OR PacienteId = @Paciente)
+                                    ) THEN 4
+                                    ELSE 0 END";
+            using (SqlCommand comando = new SqlCommand(consultas, conexion, transaccion))
+            {
+                comando.Parameters.Add("@Paciente", SqlDbType.Int).Value = turno.Paciente.Id;
+                comando.Parameters.Add("@Medico", SqlDbType.Int).Value = turno.Medico.Id;
+                comando.Parameters.Add("@Especialidad", SqlDbType.Int).Value = turno.Especialidad.Id;
+                comando.Parameters.Add("@Dia", SqlDbType.TinyInt).Value = (byte)turno.FechaHora.DayOfWeek;
+                comando.Parameters.Add("@Entrada", SqlDbType.Time).Value = turno.FechaHora.TimeOfDay;
+                comando.Parameters.Add("@Salida", SqlDbType.Time).Value = turno.FechaHora.TimeOfDay.Add(TimeSpan.FromHours(1));
+                comando.Parameters.Add("@Desde", SqlDbType.DateTime2).Value = turno.FechaHora.AddHours(-1);
+                comando.Parameters.Add("@Hasta", SqlDbType.DateTime2).Value = turno.FechaHora.AddHours(1);
+                comando.Parameters.Add("@Cancelado", SqlDbType.TinyInt).Value = (byte)EstadoTurno.Cancelado;
+                switch ((int)comando.ExecuteScalar())
+                {
+                    case 1: throw new ArgumentException("El paciente seleccionado ya no existe.");
+                    case 2: throw new ArgumentException("El médico seleccionado no atiende esa especialidad.");
+                    case 3: throw new ArgumentException("El turno de una hora debe quedar dentro del horario de trabajo del médico.");
+                    case 4: throw new ArgumentException("El médico o el paciente ya tiene un turno que se superpone.");
+                }
+            }
+        }
     }
 }

@@ -10,8 +10,16 @@ namespace ClinicaTurnos.Web
         protected void Page_Load(object sender, EventArgs e)
         {
             lblMensaje.Text = "";
-            if (!IsPostBack)
-                CargarTurnos();
+            if (IsPostBack)
+                return;
+
+            if (Session["Mensaje"] is string mensaje)
+            {
+                lblMensaje.Text = Server.HtmlEncode(mensaje);
+                lblMensaje.CssClass = "aviso exito";
+                Session.Remove("Mensaje");
+            }
+            CargarTurnos();
         }
 
         protected string NombreEstado(object valor)
@@ -36,6 +44,7 @@ namespace ClinicaTurnos.Web
             }
             catch (SqlException)
             {
+                lblMensaje.CssClass = "aviso";
                 lblMensaje.Text = "No se pudieron cargar los turnos. Ejecutá el script de base de datos y revisá la conexión.";
             }
         }

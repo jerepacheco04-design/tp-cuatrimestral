@@ -1,6 +1,7 @@
 <%@ Page Title="Turnos" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Turnos.aspx.cs" Inherits="ClinicaTurnos.Web.Turnos" %>
 <asp:Content ID="contenido" ContentPlaceHolderID="ContenidoPrincipal" runat="server">
     <h1>Turnos de pacientes</h1>
+    <p><a href="TurnoAlta.aspx">Agregar turno</a></p>
     <asp:Label ID="lblMensaje" runat="server" CssClass="aviso" role="status" />
     <div class="tabla-contenedor">
         <asp:GridView ID="grilla" runat="server" AutoGenerateColumns="false" CssClass="tabla" EmptyDataText="Todavía no hay turnos cargados.">
