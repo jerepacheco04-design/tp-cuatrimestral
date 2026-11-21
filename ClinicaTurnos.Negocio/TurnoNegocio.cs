@@ -39,5 +39,13 @@ namespace ClinicaTurnos.Negocio
 
             new TurnoDatos().Agregar(turno);
         }
+
+        public void Cancelar(int id)
+        {
+            if (id <= 0)
+                throw new ArgumentException("Seleccioná un turno válido.");
+
+            new TurnoDatos().Cancelar(id);
+        }
     }
 }

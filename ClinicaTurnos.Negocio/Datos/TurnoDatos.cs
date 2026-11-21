@@ -95,6 +95,27 @@ namespace ClinicaTurnos.Negocio.Datos
             }
         }
 
+        public void Cancelar(int id)
+        {
+            using (SqlConnection conexion = new SqlConnection(cadenaConexion))
+            using (SqlCommand comando = new SqlCommand(
+                @"UPDATE dbo.Turnos
+                  SET Estado = @Cancelado
+                  WHERE Id = @Id
+                    AND Estado IN (@Nuevo, @Reprogramado)
+                    AND FechaHora > @Ahora", conexion))
+            {
+                comando.Parameters.Add("@Id", SqlDbType.Int).Value = id;
+                comando.Parameters.Add("@Cancelado", SqlDbType.TinyInt).Value = (byte)EstadoTurno.Cancelado;
+                comando.Parameters.Add("@Nuevo", SqlDbType.TinyInt).Value = (byte)EstadoTurno.Nuevo;
+                comando.Parameters.Add("@Reprogramado", SqlDbType.TinyInt).Value = (byte)EstadoTurno.Reprogramado;
+                comando.Parameters.Add("@Ahora", SqlDbType.DateTime2).Value = DateTime.Now;
+                conexion.Open();
+                if (comando.ExecuteNonQuery() == 0)
+                    throw new InvalidOperationException("El turno no existe, ya pasó o ya no se puede cancelar.");
+            }
+        }
+
         private void ValidarDisponibilidad(Turno turno, SqlConnection conexion, SqlTransaction transaccion)
         {
             string consultas = @"SELECT CASE
