@@ -79,8 +79,8 @@ namespace ClinicaTurnos.Web
 
             Turno turno = (Turno)e.Row.DataItem;
             LinkButton botonCancelar = (LinkButton)e.Row.FindControl("btnCancelar");
-            botonCancelar.Visible = turno.FechaHora > DateTime.Now &&
-                (turno.Estado == EstadoTurno.Nuevo || turno.Estado == EstadoTurno.Reprogramado);
+            HyperLink linkReprogramar = (HyperLink)e.Row.FindControl("linkReprogramar");
+            botonCancelar.Visible = linkReprogramar.Visible = turno.PuedeCambiarAgenda(DateTime.Now);
         }
 
         private void MostrarMensaje(string mensaje)

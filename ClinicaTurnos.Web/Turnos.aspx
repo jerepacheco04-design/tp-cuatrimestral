@@ -6,6 +6,7 @@
     <div class="tabla-contenedor">
         <asp:GridView ID="grilla" runat="server" AutoGenerateColumns="false" CssClass="tabla" EmptyDataText="Todavía no hay turnos cargados." OnRowCommand="grilla_RowCommand" OnRowDataBound="grilla_RowDataBound">
             <Columns>
+                <asp:BoundField DataField="Id" HeaderText="Número" />
                 <asp:BoundField DataField="FechaHora" HeaderText="Fecha y hora" DataFormatString="{0:dd/MM/yyyy HH:mm}" />
                 <asp:TemplateField HeaderText="Paciente">
                     <ItemTemplate><%#: Eval("Paciente.Apellido") %>, <%#: Eval("Paciente.Nombre") %></ItemTemplate>
@@ -22,6 +23,7 @@
                 <asp:BoundField DataField="MotivoConsulta" HeaderText="Motivo" />
                 <asp:TemplateField HeaderText="Acciones">
                     <ItemTemplate>
+                        <asp:HyperLink ID="linkReprogramar" runat="server" Text="Reprogramar" NavigateUrl='<%# "TurnoAlta.aspx?id=" + Eval("Id") %>' />
                         <asp:LinkButton ID="btnCancelar" runat="server" Text="Cancelar" CommandName="CancelarTurno" CommandArgument='<%# Eval("Id") %>' OnClientClick="return confirm('¿Confirmás la cancelación de este turno?');" />
                     </ItemTemplate>
                 </asp:TemplateField>
