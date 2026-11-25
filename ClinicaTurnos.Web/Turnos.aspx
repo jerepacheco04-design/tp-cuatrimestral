@@ -19,6 +19,7 @@
                 </asp:TemplateField>
                 <asp:BoundField DataField="EstadoVisible" HeaderText="Estado" />
                 <asp:BoundField DataField="MotivoConsulta" HeaderText="Motivo" />
+                <asp:BoundField DataField="CargadoPor" HeaderText="Cargado por" NullDisplayText="—" />
                 <asp:TemplateField HeaderText="Acciones">
                     <ItemTemplate>
                         <asp:HyperLink ID="linkReprogramar" runat="server" Text="Reprogramar" NavigateUrl='<%# "TurnoAlta.aspx?id=" + Eval("Id") %>' />

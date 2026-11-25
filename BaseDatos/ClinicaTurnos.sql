@@ -137,3 +137,9 @@ BEGIN
     );
 END
 GO
+IF COL_LENGTH(N'dbo.Turnos', N'RecepcionistaId') IS NULL
+    ALTER TABLE dbo.Turnos ADD RecepcionistaId int NULL;
+GO
+IF OBJECT_ID(N'dbo.FK_Turnos_Usuarios_Recepcionista', N'F') IS NULL
+    ALTER TABLE dbo.Turnos ADD CONSTRAINT FK_Turnos_Usuarios_Recepcionista FOREIGN KEY (RecepcionistaId) REFERENCES dbo.Usuarios(Id);
+GO

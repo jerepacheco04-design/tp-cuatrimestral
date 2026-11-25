@@ -143,6 +143,8 @@ namespace ClinicaTurnos.Negocio
         {
             if (turno == null)
                 throw new ArgumentException("Completá los datos del turno.");
+            if (turno.Recepcionista == null || turno.Recepcionista.Id <= 0)
+                throw new ArgumentException("Inicia sesion para registrar el turno.");
             if (turno.Paciente == null || turno.Paciente.Id <= 0)
                 throw new ArgumentException("Seleccioná un paciente.");
             if (turno.Especialidad == null || turno.Especialidad.Id <= 0)

@@ -11,6 +11,7 @@ namespace ClinicaTurnos.Dominio
         public Medico Medico { get; set; }
         public Especialidad Especialidad { get; set; }
         public Usuario Recepcionista { get; set; }
+        public string CargadoPor { get { return Recepcionista?.NombreUsuario; } }
         public DateTime FechaHora { get; set; }
         public EstadoTurno Estado { get; set; }
         public string EstadoVisible { get { return Estado == EstadoTurno.NoAsistio ? "No asistió" : Estado.ToString(); } }

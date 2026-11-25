@@ -19,11 +19,13 @@ namespace ClinicaTurnos.Negocio.Datos
                                       CASE WHEN @IncluirDiagnostico = 1 THEN t.ObservacionesDiagnostico END AS ObservacionesDiagnostico,
                                       p.Id AS PacienteId, p.Dni, p.Nombre AS PacienteNombre, p.Apellido AS PacienteApellido,
                                       m.Id AS MedicoId, m.Nombre AS MedicoNombre, m.Apellido AS MedicoApellido, m.Matricula,
-                                      e.Id AS EspecialidadId, e.Nombre AS EspecialidadNombre
+                                      e.Id AS EspecialidadId, e.Nombre AS EspecialidadNombre,
+                                      u.Id AS RecepcionistaId, u.NombreUsuario AS UsuarioRecepcion
                                FROM dbo.Turnos t
                                INNER JOIN dbo.Pacientes p ON p.Id = t.PacienteId
                                INNER JOIN dbo.Medicos m ON m.Id = t.MedicoId
                                INNER JOIN dbo.Especialidades e ON e.Id = t.EspecialidadId
+                               LEFT JOIN dbo.Usuarios u ON u.Id = t.RecepcionistaId AND @MedicoId IS NULL
                                WHERE (@Id IS NULL OR t.Id = @Id) AND (@MedicoId IS NULL OR t.MedicoId = @MedicoId)
                                  AND (@PacienteId IS NULL OR t.PacienteId = @PacienteId)
                                  AND (@Hasta IS NULL OR t.FechaHora <= @Hasta)
@@ -51,6 +53,11 @@ namespace ClinicaTurnos.Negocio.Datos
                             ObservacionesDiagnostico = lector["ObservacionesDiagnostico"] == DBNull.Value
                                 ? null
                                 : (string)lector["ObservacionesDiagnostico"],
+                            Recepcionista = lector["RecepcionistaId"] == DBNull.Value ? null : new Usuario
+                            {
+                                Id = (int)lector["RecepcionistaId"],
+                                NombreUsuario = (string)lector["UsuarioRecepcion"]
+                            },
                             Paciente = new Paciente
                             {
                                 Id = (int)lector["PacienteId"],
@@ -108,8 +115,11 @@ namespace ClinicaTurnos.Negocio.Datos
                 using (SqlTransaction transaccion = conexion.BeginTransaction(IsolationLevel.Serializable))
                 {
                     ValidarDisponibilidad(turno, conexion, transaccion);
-                    string consulta = @"INSERT INTO dbo.Turnos (PacienteId, MedicoId, EspecialidadId, FechaHora, Estado, MotivoConsulta)
-                                        OUTPUT INSERTED.Id VALUES (@Paciente, @Medico, @Especialidad, @FechaHora, @Estado, @Motivo)";
+                    string consulta = @"INSERT INTO dbo.Turnos (PacienteId, MedicoId, EspecialidadId, FechaHora, Estado, MotivoConsulta, RecepcionistaId)
+                                        OUTPUT INSERTED.Id
+                                        SELECT @Paciente, @Medico, @Especialidad, @FechaHora, @Estado, @Motivo, Id
+                                        FROM dbo.Usuarios
+                                        WHERE Id = @Usuario AND Activo = 1 AND Perfil IN (@Recepcionista, @Administrador)";
                     using (SqlCommand comando = new SqlCommand(consulta, conexion, transaccion))
                     {
                         comando.Parameters.Add("@Paciente", SqlDbType.Int).Value = turno.Paciente.Id;
@@ -118,7 +128,11 @@ namespace ClinicaTurnos.Negocio.Datos
                         comando.Parameters.Add("@FechaHora", SqlDbType.DateTime2).Value = turno.FechaHora;
                         comando.Parameters.Add("@Estado", SqlDbType.TinyInt).Value = (byte)EstadoTurno.Nuevo;
                         comando.Parameters.Add("@Motivo", SqlDbType.NVarChar, 500).Value = turno.MotivoConsulta;
-                        int id = (int)comando.ExecuteScalar();
+                        comando.Parameters.Add("@Usuario", SqlDbType.Int).Value = turno.Recepcionista.Id;
+                        comando.Parameters.Add("@Recepcionista", SqlDbType.TinyInt).Value = (byte)PerfilUsuario.Recepcionista;
+                        comando.Parameters.Add("@Administrador", SqlDbType.TinyInt).Value = (byte)PerfilUsuario.Administrador;
+                        if (!(comando.ExecuteScalar() is int id))
+                            throw new ArgumentException("Esta cuenta no puede registrar turnos.");
                         transaccion.Commit();
                         turno.Id = id;
                         turno.Estado = EstadoTurno.Nuevo;
