@@ -13,6 +13,7 @@
                 <asp:BoundField DataField="Email" HeaderText="Correo electrónico" />
                 <asp:TemplateField HeaderText="Acciones">
                     <ItemTemplate>
+                        <asp:HyperLink ID="linkHistorial" runat="server" Text="Historial" NavigateUrl='<%# "HistorialPaciente.aspx?id=" + Eval("Id") %>' />
                         <asp:HyperLink ID="linkModificar" runat="server" Text="Modificar" NavigateUrl='<%# "PacienteAlta.aspx?id=" + Eval("Id") %>' />
                         <asp:LinkButton ID="linkEliminar" runat="server" Text="Eliminar" CommandName="Eliminar" CommandArgument='<%# Eval("Id") %>' CausesValidation="false" OnClientClick="return confirm('¿Eliminar este paciente?');" />
                     </ItemTemplate>

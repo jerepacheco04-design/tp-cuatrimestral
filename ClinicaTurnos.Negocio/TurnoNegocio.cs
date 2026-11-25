@@ -29,17 +29,44 @@ namespace ClinicaTurnos.Negocio
         public Turno ObtenerDelMedico(int id, int medicoId)
         {
             ValidarId(id);
-            return datos.Listar(id, medicoId).FirstOrDefault();
+            return datos.Listar(id, medicoId, incluirDiagnostico: true).FirstOrDefault();
+        }
+
+        public List<Turno> ListarHistorial(int pacienteId, int? medicoId)
+        {
+            ValidarId(pacienteId);
+            return datos.Listar(medicoId: medicoId, pacienteId: pacienteId, hasta: DateTime.Now, incluirDiagnostico: medicoId.HasValue)
+                .OrderByDescending(turno => turno.FechaHora).ThenByDescending(turno => turno.Id).ToList();
         }
 
         public void GuardarObservacion(int id, int medicoId, string observacion)
         {
+            GuardarConsulta(id, medicoId, ValidarObservacion(observacion), null);
+        }
+
+        public void CerrarConsulta(int id, int medicoId, string observacion)
+        {
+            GuardarConsulta(id, medicoId, ValidarObservacion(observacion), EstadoTurno.Cerrado);
+        }
+
+        public void MarcarAusencia(int id, int medicoId)
+        {
+            GuardarConsulta(id, medicoId, null, EstadoTurno.NoAsistio);
+        }
+
+        private void GuardarConsulta(int id, int medicoId, string observacion, EstadoTurno? estado)
+        {
             ValidarId(id);
+            if (!datos.GuardarConsulta(id, medicoId, observacion, estado))
+                throw new InvalidOperationException("La consulta no está disponible.");
+        }
+
+        private string ValidarObservacion(string observacion)
+        {
             observacion = (observacion ?? "").Trim();
             if (observacion.Length == 0 || observacion.Length > 1000)
                 throw new ArgumentException("Ingresá una observación de hasta 1000 caracteres.");
-            if (!datos.GuardarObservacion(id, medicoId, observacion))
-                throw new InvalidOperationException("La consulta no está disponible.");
+            return observacion;
         }
 
         public List<Medico> ListarMedicos(int especialidadId)

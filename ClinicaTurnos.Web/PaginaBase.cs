@@ -14,6 +14,7 @@ namespace ClinicaTurnos.Web
 
         protected virtual bool RequiereSesion { get { return true; } }
         protected virtual bool EsPaginaMedico { get { return false; } }
+        protected virtual bool PermiteMedico { get { return EsPaginaMedico; } }
 
         protected override void OnInit(EventArgs e)
         {
@@ -24,13 +25,15 @@ namespace ClinicaTurnos.Web
             {
                 if (usuario == null)
                     Response.Redirect("~/Default.aspx");
-                if (EsPaginaMedico)
+                if (usuario.Perfil == PerfilUsuario.Medico)
                 {
-                    if (usuario.Perfil != PerfilUsuario.Medico || !usuario.MedicoId.HasValue)
+                    if (!usuario.MedicoId.HasValue)
                         Response.Redirect("~/Default.aspx");
+                    if (!PermiteMedico)
+                        Response.Redirect("~/MiAgenda.aspx");
                 }
-                else if (usuario.Perfil == PerfilUsuario.Medico)
-                    Response.Redirect("~/MiAgenda.aspx");
+                else if (EsPaginaMedico)
+                    Response.Redirect("~/Default.aspx");
             }
 
             if (Session["ClaveFormulario"] == null)

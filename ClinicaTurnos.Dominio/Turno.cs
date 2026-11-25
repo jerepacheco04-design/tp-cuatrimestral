@@ -17,9 +17,14 @@ namespace ClinicaTurnos.Dominio
         public string MotivoConsulta { get; set; }
         public string ObservacionesDiagnostico { get; set; }
 
+        public bool EstaPendiente
+        {
+            get { return Estado == EstadoTurno.Nuevo || Estado == EstadoTurno.Reprogramado; }
+        }
+
         public bool PuedeCambiarAgenda(DateTime ahora)
         {
-            return FechaHora > ahora && (Estado == EstadoTurno.Nuevo || Estado == EstadoTurno.Reprogramado);
+            return FechaHora > ahora && EstaPendiente;
         }
     }
 }

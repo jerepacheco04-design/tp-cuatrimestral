@@ -9,5 +9,8 @@ namespace ClinicaTurnos.Web
         protected global::System.Web.UI.WebControls.Label lblMotivo;
         protected global::System.Web.UI.WebControls.TextBox txtObservacion;
         protected global::System.Web.UI.WebControls.Button btnGuardar;
+        protected global::System.Web.UI.WebControls.HyperLink lnkHistorial;
+        protected global::System.Web.UI.WebControls.Button btnCerrar;
+        protected global::System.Web.UI.WebControls.Button btnAusente;
     }
 }

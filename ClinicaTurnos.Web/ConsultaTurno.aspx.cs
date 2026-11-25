@@ -30,10 +30,11 @@ namespace ClinicaTurnos.Web
                 lblTurno.Text = Server.HtmlEncode("Turno " + turno.Id + " – " + turno.FechaHora.ToString("dd/MM/yyyy HH:mm") +
                     " – " + turno.Especialidad.Nombre + " – " + turno.EstadoVisible);
                 lblMotivo.Text = Server.HtmlEncode("Motivo: " + turno.MotivoConsulta);
+                lnkHistorial.NavigateUrl = "HistorialPaciente.aspx?turnoId=" + turno.Id;
                 txtObservacion.Text = turno.ObservacionesDiagnostico ?? "";
-                bool editable = turno.Estado != EstadoTurno.Cancelado && turno.Estado != EstadoTurno.NoAsistio;
-                txtObservacion.ReadOnly = !editable;
-                btnGuardar.Visible = editable;
+                txtObservacion.ReadOnly = !turno.EstaPendiente;
+                btnGuardar.Visible = turno.EstaPendiente;
+                btnCerrar.Visible = btnAusente.Visible = turno.EstaPendiente && turno.FechaHora <= DateTime.Now;
             }
             catch (SqlException)
             {
@@ -44,12 +45,46 @@ namespace ClinicaTurnos.Web
 
         protected void btnGuardar_Click(object sender, EventArgs e)
         {
-            if (!pnlConsulta.Visible || !btnGuardar.Visible || TurnoId == 0)
+            if (btnGuardar.Visible)
+                GuardarConsulta(null);
+        }
+
+        protected void btnCerrar_Click(object sender, EventArgs e)
+        {
+            if (btnCerrar.Visible)
+                GuardarConsulta(EstadoTurno.Cerrado);
+        }
+
+        protected void btnAusente_Click(object sender, EventArgs e)
+        {
+            if (btnAusente.Visible)
+                GuardarConsulta(EstadoTurno.NoAsistio);
+        }
+
+        private void GuardarConsulta(EstadoTurno? estado)
+        {
+            if (!pnlConsulta.Visible || TurnoId == 0)
                 return;
+
             try
             {
-                new TurnoNegocio().GuardarObservacion(TurnoId, UsuarioActual.MedicoId.Value, txtObservacion.Text);
-                Session["Mensaje"] = "Observación guardada.";
+                TurnoNegocio negocio = new TurnoNegocio();
+                int medicoId = UsuarioActual.MedicoId.Value;
+                if (estado == EstadoTurno.Cerrado)
+                {
+                    negocio.CerrarConsulta(TurnoId, medicoId, txtObservacion.Text);
+                    Session["Mensaje"] = "Consulta cerrada.";
+                }
+                else if (estado == EstadoTurno.NoAsistio)
+                {
+                    negocio.MarcarAusencia(TurnoId, medicoId);
+                    Session["Mensaje"] = "Turno marcado como No asistió.";
+                }
+                else
+                {
+                    negocio.GuardarObservacion(TurnoId, medicoId, txtObservacion.Text);
+                    Session["Mensaje"] = "Observación guardada.";
+                }
                 Response.Redirect("MiAgenda.aspx");
             }
             catch (ArgumentException ex)
@@ -62,7 +97,7 @@ namespace ClinicaTurnos.Web
             }
             catch (SqlException)
             {
-                lblMensaje.Text = "No se pudo guardar la observación. Intentá nuevamente.";
+                lblMensaje.Text = "No se pudo guardar la consulta. Intentá nuevamente.";
             }
         }
 
