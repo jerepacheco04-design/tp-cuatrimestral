@@ -11,7 +11,7 @@ namespace ClinicaTurnos.Negocio.Datos
     {
         private readonly string cadenaConexion = ConfigurationManager.ConnectionStrings["ClinicaTurnos"].ConnectionString;
 
-        public List<Turno> Listar(int? id = null)
+        public List<Turno> Listar(int? id = null, int? medicoId = null)
         {
             List<Turno> turnos = new List<Turno>();
             string consulta = @"SELECT t.Id, t.FechaHora, t.Estado, t.MotivoConsulta, t.ObservacionesDiagnostico,
@@ -22,13 +22,14 @@ namespace ClinicaTurnos.Negocio.Datos
                                INNER JOIN dbo.Pacientes p ON p.Id = t.PacienteId
                                INNER JOIN dbo.Medicos m ON m.Id = t.MedicoId
                                INNER JOIN dbo.Especialidades e ON e.Id = t.EspecialidadId
-                               WHERE @Id IS NULL OR t.Id = @Id
+                               WHERE (@Id IS NULL OR t.Id = @Id) AND (@MedicoId IS NULL OR t.MedicoId = @MedicoId)
                                ORDER BY t.FechaHora, t.Id";
 
             using (SqlConnection conexion = new SqlConnection(cadenaConexion))
             using (SqlCommand comando = new SqlCommand(consulta, conexion))
             {
                 comando.Parameters.Add("@Id", SqlDbType.Int).Value = (object)id ?? DBNull.Value;
+                comando.Parameters.Add("@MedicoId", SqlDbType.Int).Value = (object)medicoId ?? DBNull.Value;
                 conexion.Open();
                 using (SqlDataReader lector = comando.ExecuteReader())
                 {
@@ -68,6 +69,24 @@ namespace ClinicaTurnos.Negocio.Datos
             }
 
             return turnos;
+        }
+
+        public bool GuardarObservacion(int id, int medicoId, string observacion)
+        {
+            const string consulta = @"UPDATE dbo.Turnos SET ObservacionesDiagnostico = @Observacion
+                                     WHERE Id = @Id AND MedicoId = @MedicoId AND Estado IN (@Nuevo, @Reprogramado, @Cerrado)";
+            using (SqlConnection conexion = new SqlConnection(cadenaConexion))
+            using (SqlCommand comando = new SqlCommand(consulta, conexion))
+            {
+                comando.Parameters.Add("@Id", SqlDbType.Int).Value = id;
+                comando.Parameters.Add("@MedicoId", SqlDbType.Int).Value = medicoId;
+                comando.Parameters.Add("@Observacion", SqlDbType.NVarChar, 1000).Value = observacion;
+                comando.Parameters.Add("@Nuevo", SqlDbType.TinyInt).Value = (byte)EstadoTurno.Nuevo;
+                comando.Parameters.Add("@Reprogramado", SqlDbType.TinyInt).Value = (byte)EstadoTurno.Reprogramado;
+                comando.Parameters.Add("@Cerrado", SqlDbType.TinyInt).Value = (byte)EstadoTurno.Cerrado;
+                conexion.Open();
+                return comando.ExecuteNonQuery() == 1;
+            }
         }
 
         public void Agregar(Turno turno)

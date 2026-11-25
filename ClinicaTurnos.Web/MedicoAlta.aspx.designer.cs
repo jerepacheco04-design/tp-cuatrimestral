@@ -12,5 +12,9 @@ namespace ClinicaTurnos.Web
         protected global::System.Web.UI.WebControls.DropDownList ddlHorario;
         protected global::System.Web.UI.WebControls.CheckBoxList listaEspecialidades;
         protected global::System.Web.UI.WebControls.Button btnGuardar;
+        protected global::System.Web.UI.WebControls.Panel pnlAcceso;
+        protected global::System.Web.UI.WebControls.Label lblAcceso;
+        protected global::System.Web.UI.WebControls.TextBox txtUsuarioMedico;
+        protected global::System.Web.UI.WebControls.TextBox txtClaveMedico;
     }
 }

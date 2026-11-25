@@ -8,6 +8,7 @@ namespace ClinicaTurnos.Dominio
         public string Apellido { get; set; }
         public string Email { get; set; }
         public PerfilUsuario Perfil { get; set; }
+        public int? MedicoId { get; set; }
         public bool Activo { get; set; }
     }
 }

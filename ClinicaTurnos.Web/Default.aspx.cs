@@ -7,13 +7,19 @@ namespace ClinicaTurnos.Web
 {
     public partial class Inicio : PaginaBase
     {
+        protected override bool RequiereSesion { get { return false; } }
+
         protected void Page_Load(object sender, EventArgs e)
         {
-            Usuario usuario = Session["Usuario"] as Usuario;
+            Usuario usuario = UsuarioActual;
             pnlLogin.Visible = usuario == null;
             pnlInicio.Visible = usuario != null;
             if (usuario != null)
+            {
                 lblBienvenida.Text = "Bienvenido, " + Server.HtmlEncode(usuario.Nombre + " " + usuario.Apellido + ".");
+                lnkMiAgenda.Visible = usuario.Perfil == PerfilUsuario.Medico;
+                pnlInicioGestion.Visible = !lnkMiAgenda.Visible;
+            }
         }
 
         protected void btnIngresar_Click(object sender, EventArgs e)
@@ -31,7 +37,7 @@ namespace ClinicaTurnos.Web
                 Session.Clear();
                 Session["Usuario"] = usuario;
                 Session["ClaveFormulario"] = Guid.NewGuid().ToString();
-                Response.Redirect("~/Default.aspx", false);
+                Response.Redirect(usuario.Perfil == PerfilUsuario.Medico ? "~/MiAgenda.aspx" : "~/Default.aspx", false);
                 Context.ApplicationInstance.CompleteRequest();
             }
             catch (ArgumentException ex)

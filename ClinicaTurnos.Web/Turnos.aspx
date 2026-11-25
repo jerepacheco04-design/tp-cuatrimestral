@@ -17,9 +17,7 @@
                 <asp:TemplateField HeaderText="Especialidad">
                     <ItemTemplate><%#: Eval("Especialidad.Nombre") %></ItemTemplate>
                 </asp:TemplateField>
-                <asp:TemplateField HeaderText="Estado">
-                    <ItemTemplate><%#: NombreEstado(Eval("Estado")) %></ItemTemplate>
-                </asp:TemplateField>
+                <asp:BoundField DataField="EstadoVisible" HeaderText="Estado" />
                 <asp:BoundField DataField="MotivoConsulta" HeaderText="Motivo" />
                 <asp:TemplateField HeaderText="Acciones">
                     <ItemTemplate>

@@ -56,6 +56,10 @@
     <Compile Include="PacienteAlta.aspx.designer.cs"><DependentUpon>PacienteAlta.aspx</DependentUpon></Compile>
     <Compile Include="Pacientes.aspx.cs"><DependentUpon>Pacientes.aspx</DependentUpon><SubType>ASPXCodeBehind</SubType></Compile>
     <Compile Include="Pacientes.aspx.designer.cs"><DependentUpon>Pacientes.aspx</DependentUpon></Compile>
+    <Compile Include="MiAgenda.aspx.cs"><DependentUpon>MiAgenda.aspx</DependentUpon><SubType>ASPXCodeBehind</SubType></Compile>
+    <Compile Include="MiAgenda.aspx.designer.cs"><DependentUpon>MiAgenda.aspx</DependentUpon></Compile>
+    <Compile Include="ConsultaTurno.aspx.cs"><DependentUpon>ConsultaTurno.aspx</DependentUpon><SubType>ASPXCodeBehind</SubType></Compile>
+    <Compile Include="ConsultaTurno.aspx.designer.cs"><DependentUpon>ConsultaTurno.aspx</DependentUpon></Compile>
     <Compile Include="PaginaBase.cs" />
     <Compile Include="Site.Master.cs"><DependentUpon>Site.Master</DependentUpon><SubType>ASPXCodeBehind</SubType></Compile>
     <Compile Include="Site.Master.designer.cs"><DependentUpon>Site.Master</DependentUpon></Compile>
@@ -71,6 +75,8 @@
     <Content Include="Turnos.aspx" />
     <Content Include="PacienteAlta.aspx" />
     <Content Include="Pacientes.aspx" />
+    <Content Include="MiAgenda.aspx" />
+    <Content Include="ConsultaTurno.aspx" />
     <Content Include="Site.Master" />
     <Content Include="Web.config" />
   </ItemGroup>

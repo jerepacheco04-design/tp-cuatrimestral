@@ -28,6 +28,18 @@
             <legend>Especialidades</legend>
             <asp:CheckBoxList ID="listaEspecialidades" runat="server" RepeatLayout="Flow" />
         </fieldset>
+        <asp:Panel ID="pnlAcceso" runat="server">
+            <h3>Acceso del médico (opcional)</h3>
+            <div class="campo">
+                <asp:Label runat="server" AssociatedControlID="txtUsuarioMedico" Text="Usuario" />
+                <asp:TextBox ID="txtUsuarioMedico" runat="server" MaxLength="50" autocomplete="off" />
+            </div>
+            <div class="campo">
+                <asp:Label runat="server" AssociatedControlID="txtClaveMedico" Text="Contraseña (mínimo 12 caracteres)" />
+                <asp:TextBox ID="txtClaveMedico" runat="server" TextMode="Password" MaxLength="100" autocomplete="new-password" />
+            </div>
+        </asp:Panel>
+        <asp:Label ID="lblAcceso" runat="server" />
         <div class="acciones">
             <asp:Button ID="btnGuardar" runat="server" Text="Guardar" OnClick="btnGuardar_Click" />
             <a href="Medicos.aspx">Cancelar</a>

@@ -21,6 +21,27 @@ namespace ClinicaTurnos.Negocio
             return datos.Listar(id).FirstOrDefault();
         }
 
+        public List<Turno> ListarDelMedico(int medicoId)
+        {
+            return datos.Listar(medicoId: medicoId);
+        }
+
+        public Turno ObtenerDelMedico(int id, int medicoId)
+        {
+            ValidarId(id);
+            return datos.Listar(id, medicoId).FirstOrDefault();
+        }
+
+        public void GuardarObservacion(int id, int medicoId, string observacion)
+        {
+            ValidarId(id);
+            observacion = (observacion ?? "").Trim();
+            if (observacion.Length == 0 || observacion.Length > 1000)
+                throw new ArgumentException("Ingresá una observación de hasta 1000 caracteres.");
+            if (!datos.GuardarObservacion(id, medicoId, observacion))
+                throw new InvalidOperationException("La consulta no está disponible.");
+        }
+
         public List<Medico> ListarMedicos(int especialidadId)
         {
             return new MedicoNegocio().Listar().FindAll(medico =>

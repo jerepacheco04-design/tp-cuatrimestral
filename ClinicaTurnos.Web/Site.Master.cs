@@ -8,7 +8,10 @@ namespace ClinicaTurnos.Web
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            navPrincipal.Visible = Session["Usuario"] is Usuario;
+            Usuario usuario = Session["Usuario"] as Usuario;
+            navPrincipal.Visible = usuario != null;
+            lnkMiAgenda.Visible = usuario != null && usuario.Perfil == PerfilUsuario.Medico;
+            pnlGestion.Visible = usuario != null && usuario.Perfil != PerfilUsuario.Medico;
         }
 
         protected void btnCerrarSesion_Click(object sender, EventArgs e)

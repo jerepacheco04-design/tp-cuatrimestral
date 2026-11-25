@@ -86,6 +86,19 @@ BEGIN
     );
 END
 GO
+IF COL_LENGTH(N'dbo.Usuarios', N'ClaveIteraciones') IS NULL
+    ALTER TABLE dbo.Usuarios ADD ClaveIteraciones int NULL;
+GO
+IF COL_LENGTH(N'dbo.Medicos', N'UsuarioId') IS NULL
+    ALTER TABLE dbo.Medicos ADD UsuarioId int NULL;
+GO
+IF OBJECT_ID(N'dbo.FK_Medicos_Usuarios', N'F') IS NULL
+    ALTER TABLE dbo.Medicos ADD CONSTRAINT FK_Medicos_Usuarios FOREIGN KEY (UsuarioId) REFERENCES dbo.Usuarios(Id);
+GO
+SET QUOTED_IDENTIFIER ON;
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE object_id = OBJECT_ID(N'dbo.Medicos') AND name = N'UX_Medicos_Usuario')
+    CREATE UNIQUE INDEX UX_Medicos_Usuario ON dbo.Medicos(UsuarioId) WHERE UsuarioId IS NOT NULL;
+GO
 DECLARE @SalUsuario varbinary(16) = 0x4E6F727465436C696E69636131323334;
 IF NOT EXISTS (SELECT 1 FROM dbo.Usuarios WHERE NombreUsuario = N'recepcionista')
 BEGIN

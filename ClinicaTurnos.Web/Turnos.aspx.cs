@@ -23,19 +23,6 @@ namespace ClinicaTurnos.Web
             CargarTurnos();
         }
 
-        protected string NombreEstado(object valor)
-        {
-            switch ((EstadoTurno)valor)
-            {
-                case EstadoTurno.Nuevo: return "Nuevo";
-                case EstadoTurno.Reprogramado: return "Reprogramado";
-                case EstadoTurno.Cancelado: return "Cancelado";
-                case EstadoTurno.NoAsistio: return "No asistió";
-                case EstadoTurno.Cerrado: return "Cerrado";
-                default: return "";
-            }
-        }
-
         protected void grilla_RowCommand(object sender, GridViewCommandEventArgs e)
         {
             if (e.CommandName != "CancelarTurno")

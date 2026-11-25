@@ -16,11 +16,13 @@
     <asp:Panel ID="pnlInicio" runat="server" Visible="false">
         <h1>Inicio</h1>
         <asp:Label ID="lblBienvenida" runat="server" />
-        <p>Administración de la clínica.</p>
-        <ul>
-            <li><a href="Pacientes.aspx">Pacientes</a></li>
-            <li><a href="Especialidades.aspx">Especialidades</a></li>
-            <li><a href="Turnos.aspx">Turnos</a></li>
-        </ul>
+        <asp:PlaceHolder ID="pnlInicioGestion" runat="server">
+            <ul>
+                <li><a href="Pacientes.aspx">Pacientes</a></li>
+                <li><a href="Medicos.aspx">Médicos</a></li>
+                <li><a href="Turnos.aspx">Turnos</a></li>
+            </ul>
+        </asp:PlaceHolder>
+        <asp:HyperLink ID="lnkMiAgenda" runat="server" NavigateUrl="~/MiAgenda.aspx" Text="Mi agenda" />
     </asp:Panel>
 </asp:Content>

@@ -13,6 +13,7 @@ namespace ClinicaTurnos.Dominio
         public Usuario Recepcionista { get; set; }
         public DateTime FechaHora { get; set; }
         public EstadoTurno Estado { get; set; }
+        public string EstadoVisible { get { return Estado == EstadoTurno.NoAsistio ? "No asistió" : Estado.ToString(); } }
         public string MotivoConsulta { get; set; }
         public string ObservacionesDiagnostico { get; set; }
 
