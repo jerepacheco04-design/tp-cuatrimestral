@@ -11,13 +11,14 @@
     <form id="formPrincipal" runat="server">
         <header>
             <h2>Clínica médica</h2>
-            <nav>
+            <nav id="navPrincipal" runat="server">
                 <a href="<%= ResolveUrl("~/Default.aspx") %>">Inicio</a>
                 <a href="<%= ResolveUrl("~/Pacientes.aspx") %>">Pacientes</a>
                 <a href="<%= ResolveUrl("~/Especialidades.aspx") %>">Especialidades</a>
                 <a href="<%= ResolveUrl("~/TurnosTrabajo.aspx") %>">Horarios de trabajo</a>
                 <a href="<%= ResolveUrl("~/Medicos.aspx") %>">Médicos</a>
                 <a href="<%= ResolveUrl("~/Turnos.aspx") %>">Turnos</a>
+                <asp:LinkButton ID="btnCerrarSesion" runat="server" OnClick="btnCerrarSesion_Click">Cerrar sesión</asp:LinkButton>
             </nav>
         </header>
         <main>

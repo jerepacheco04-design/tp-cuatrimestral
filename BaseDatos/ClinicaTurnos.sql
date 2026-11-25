@@ -68,6 +68,32 @@ BEGIN
     );
 END
 GO
+IF OBJECT_ID(N'dbo.Usuarios', N'U') IS NULL
+BEGIN
+    CREATE TABLE dbo.Usuarios
+    (
+        Id int IDENTITY(1,1) PRIMARY KEY,
+        NombreUsuario nvarchar(50) NOT NULL,
+        ClaveHash varbinary(32) NOT NULL,
+        ClaveSalt varbinary(16) NOT NULL,
+        Nombre nvarchar(80) NOT NULL,
+        Apellido nvarchar(80) NOT NULL,
+        Email nvarchar(254) NOT NULL,
+        Perfil tinyint NOT NULL,
+        Activo bit NOT NULL CONSTRAINT DF_Usuarios_Activo DEFAULT (1),
+        CONSTRAINT UQ_Usuarios_NombreUsuario UNIQUE (NombreUsuario),
+        CONSTRAINT CK_Usuarios_Perfil CHECK (Perfil BETWEEN 1 AND 3)
+    );
+END
+GO
+DECLARE @SalUsuario varbinary(16) = 0x4E6F727465436C696E69636131323334;
+IF NOT EXISTS (SELECT 1 FROM dbo.Usuarios WHERE NombreUsuario = N'recepcionista')
+BEGIN
+    INSERT INTO dbo.Usuarios (NombreUsuario, ClaveHash, ClaveSalt, Nombre, Apellido, Email, Perfil, Activo)
+    VALUES (N'recepcionista', HASHBYTES('SHA2_256', @SalUsuario + CONVERT(varbinary(max), N'recepcion123')),
+            @SalUsuario, N'Recepción', N'Clínica', N'recepcion@clinica.local', 2, 1);
+END
+GO
 IF OBJECT_ID(N'dbo.MedicosEspecialidades', N'U') IS NULL
 BEGIN
     CREATE TABLE dbo.MedicosEspecialidades
