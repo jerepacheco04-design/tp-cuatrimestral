@@ -49,10 +49,10 @@ namespace ClinicaTurnos.Negocio
             return datos.Listar(id, medicoId, incluirDiagnostico: true).FirstOrDefault();
         }
 
-        public List<Turno> ListarHistorial(int pacienteId, int? medicoId)
+        public List<Turno> ListarHistorial(int pacienteId, int? medicoId, bool incluirDiagnostico)
         {
             ValidarId(pacienteId);
-            return datos.Listar(medicoId: medicoId, pacienteId: pacienteId, hasta: DateTime.Now, incluirDiagnostico: medicoId.HasValue)
+            return datos.Listar(medicoId: medicoId, pacienteId: pacienteId, hasta: DateTime.Now, incluirDiagnostico: incluirDiagnostico)
                 .OrderByDescending(turno => turno.FechaHora).ThenByDescending(turno => turno.Id).ToList();
         }
 

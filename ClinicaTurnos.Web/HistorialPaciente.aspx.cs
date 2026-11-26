@@ -15,9 +15,10 @@ namespace ClinicaTurnos.Web
                 return;
 
             bool esMedico = UsuarioActual.Perfil == PerfilUsuario.Medico;
+            bool puedeVerDiagnostico = esMedico || UsuarioActual.Perfil == PerfilUsuario.Administrador;
             lnkVolver.Text = esMedico ? "Volver a mi agenda" : "Volver a pacientes";
             lnkVolver.NavigateUrl = esMedico ? "MiAgenda.aspx" : "Pacientes.aspx";
-            grilla.Columns[grilla.Columns.Count - 1].Visible = esMedico;
+            grilla.Columns[grilla.Columns.Count - 1].Visible = puedeVerDiagnostico;
 
             int id;
             string parametro = esMedico ? "turnoId" : "id";
@@ -53,7 +54,7 @@ namespace ClinicaTurnos.Web
                 }
 
                 lblPaciente.Text = Server.HtmlEncode(paciente.Nombre + " " + paciente.Apellido);
-                grilla.DataSource = negocio.ListarHistorial(paciente.Id, medicoId);
+                grilla.DataSource = negocio.ListarHistorial(paciente.Id, medicoId, puedeVerDiagnostico);
                 grilla.DataBind();
             }
             catch (SqlException)
