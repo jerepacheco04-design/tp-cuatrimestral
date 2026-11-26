@@ -32,6 +32,7 @@
     <Compile Include="Datos\TurnoTrabajoDatos.cs" />
     <Compile Include="Datos\TurnoDatos.cs" />
     <Compile Include="Datos\UsuarioDatos.cs" />
+    <Compile Include="CorreoNegocio.cs" />
     <Compile Include="EspecialidadNegocio.cs" />
     <Compile Include="MedicoNegocio.cs" />
     <Compile Include="PacienteNegocio.cs" />

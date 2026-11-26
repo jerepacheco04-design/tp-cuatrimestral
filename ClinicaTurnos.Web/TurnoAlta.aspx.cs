@@ -238,7 +238,11 @@ namespace ClinicaTurnos.Web
                         MotivoConsulta = txtMotivo.Text
                     };
                     negocio.Agregar(turno);
-                    Session["Mensaje"] = "Turno agregado correctamente. Número " + turno.Id + ".";
+                    bool correoEnviado = new CorreoNegocio().EnviarConfirmacion(turno);
+                    string mensaje = "Turno n.º " + turno.Id;
+                    if (!correoEnviado)
+                        mensaje += ". No se envio el mail.";
+                    Session["Mensaje"] = mensaje;
                 }
                 Response.Redirect("Turnos.aspx");
             }

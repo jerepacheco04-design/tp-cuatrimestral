@@ -5,3 +5,4 @@
 *.suo
 *.log
 packages/
+/ClinicaTurnos.Web/Correo.local.config
