@@ -1,5 +1,8 @@
 using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Web.UI.WebControls;
 using ClinicaTurnos.Dominio;
 using ClinicaTurnos.Negocio;
@@ -20,6 +23,18 @@ namespace ClinicaTurnos.Web
                 lblMensaje.CssClass = "aviso exito";
                 Session.Remove("Mensaje");
             }
+            CargarTurnos();
+        }
+
+        protected void Filtrar_Click(object sender, EventArgs e)
+        {
+            if (sender == btnLimpiar)
+            {
+                txtFecha.Text = "";
+                ddlEstado.SelectedIndex = 0;
+            }
+
+            lblMensaje.Text = "";
             CargarTurnos();
         }
 
@@ -80,7 +95,24 @@ namespace ClinicaTurnos.Web
         {
             try
             {
-                grilla.DataSource = new TurnoNegocio().Listar();
+                DateTime fecha;
+                bool filtrarFecha = DateTime.TryParseExact(txtFecha.Text, "yyyy-MM-dd",
+                    CultureInfo.InvariantCulture, DateTimeStyles.None, out fecha);
+                if (txtFecha.Text.Length > 0 && !filtrarFecha)
+                {
+                    MostrarMensaje("Fecha no valida.");
+                    return;
+                }
+
+                IEnumerable<Turno> turnos = new TurnoNegocio().Listar();
+                if (filtrarFecha)
+                    turnos = turnos.Where(turno => turno.FechaHora.Date == fecha);
+
+                EstadoTurno estado;
+                if (Enum.TryParse(ddlEstado.SelectedValue, out estado))
+                    turnos = turnos.Where(turno => turno.Estado == estado);
+
+                grilla.DataSource = turnos.ToList();
                 grilla.DataBind();
             }
             catch (SqlException)

@@ -23,9 +23,24 @@ namespace ClinicaTurnos.Web
                 lblMensaje.CssClass = "aviso exito";
                 Session.Remove("Mensaje");
             }
+            CargarMedicos();
+        }
+
+        private void CargarMedicos()
+        {
             try
             {
-                grilla.DataSource = new MedicoNegocio().Listar();
+                if (!IsPostBack)
+                {
+                    foreach (Especialidad especialidad in new EspecialidadNegocio().Listar())
+                        ddlEspecialidad.Items.Add(new ListItem(especialidad.Nombre, especialidad.Id.ToString()));
+                }
+
+                List<Medico> medicos = new MedicoNegocio().Listar();
+                int especialidadId;
+                if (int.TryParse(ddlEspecialidad.SelectedValue, out especialidadId))
+                    medicos = medicos.Where(medico => medico.Especialidades.Any(especialidad => especialidad.Id == especialidadId)).ToList();
+                grilla.DataSource = medicos;
                 grilla.DataBind();
             }
             catch (SqlException)
@@ -39,6 +54,15 @@ namespace ClinicaTurnos.Web
         {
             List<Especialidad> especialidades = (List<Especialidad>)valor;
             return string.Join(", ", especialidades.Select(especialidad => especialidad.Nombre));
+        }
+
+        protected void Filtrar_Click(object sender, EventArgs e)
+        {
+            if (sender == btnLimpiar)
+                ddlEspecialidad.SelectedIndex = 0;
+
+            lblMensaje.Text = "";
+            CargarMedicos();
         }
 
         protected void grilla_RowCommand(object sender, GridViewCommandEventArgs e)

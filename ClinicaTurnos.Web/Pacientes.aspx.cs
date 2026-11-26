@@ -1,5 +1,6 @@
 using System;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Web.UI.WebControls;
 using ClinicaTurnos.Negocio;
 
@@ -17,18 +18,36 @@ namespace ClinicaTurnos.Web
                     lblMensaje.CssClass = "aviso exito";
                     Session.Remove("Mensaje");
                 }
-                try
-                {
-                    grilla.DataSource = new PacienteNegocio().Listar();
-                    grilla.DataBind();
-                }
-                catch (SqlException)
-                {
-                    lblMensaje.CssClass = "aviso";
-                    lblMensaje.Text = "No se pudieron cargar los pacientes.";
-                }
+                CargarPacientes();
             }
         }
+        private void CargarPacientes()
+        {
+            try
+            {
+                string busqueda = txtBuscar.Text.Trim();
+                grilla.DataSource = new PacienteNegocio().Listar()
+                    .Where(paciente => paciente.Dni.Contains(busqueda) ||
+                        paciente.Apellido.IndexOf(busqueda, StringComparison.CurrentCultureIgnoreCase) >= 0)
+                    .ToList();
+                grilla.DataBind();
+            }
+            catch (SqlException)
+            {
+                lblMensaje.CssClass = "aviso";
+                lblMensaje.Text = "No se pudieron cargar los pacientes.";
+            }
+        }
+
+        protected void Filtrar_Click(object sender, EventArgs e)
+        {
+            if (sender == btnLimpiar)
+                txtBuscar.Text = "";
+
+            lblMensaje.Text = "";
+            CargarPacientes();
+        }
+
         protected void grilla_RowCommand(object sender, GridViewCommandEventArgs e)
         {
             if (e.CommandName != "Eliminar") return;

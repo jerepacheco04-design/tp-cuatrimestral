@@ -2,6 +2,16 @@
 <asp:Content ID="contenido" ContentPlaceHolderID="ContenidoPrincipal" runat="server">
     <h1>Médicos</h1>
     <p><a href="MedicoAlta.aspx">Agregar médico</a></p>
+    <asp:Panel ID="pnlFiltro" runat="server" DefaultButton="btnBuscar">
+        <div class="campo">
+            <asp:Label runat="server" AssociatedControlID="ddlEspecialidad" Text="Especialidad" />
+            <asp:DropDownList ID="ddlEspecialidad" runat="server">
+                <asp:ListItem Text="Todas" Value="" />
+            </asp:DropDownList>
+        </div>
+        <asp:Button ID="btnBuscar" runat="server" Text="Buscar" OnClick="Filtrar_Click" />
+        <asp:Button ID="btnLimpiar" runat="server" Text="Limpiar" OnClick="Filtrar_Click" />
+    </asp:Panel>
     <asp:Label ID="lblMensaje" runat="server" CssClass="aviso" role="status" />
     <div class="tabla-contenedor">
         <asp:GridView ID="grilla" runat="server" AutoGenerateColumns="false" CssClass="tabla" EmptyDataText="No hay registros cargados." OnRowCommand="grilla_RowCommand">

@@ -2,6 +2,25 @@
 <asp:Content ID="contenido" ContentPlaceHolderID="ContenidoPrincipal" runat="server">
     <h1>Turnos de pacientes</h1>
     <p><a href="TurnoAlta.aspx">Agregar turno</a></p>
+    <asp:Panel ID="pnlFiltro" runat="server" DefaultButton="btnBuscar">
+        <div class="campo">
+            <asp:Label runat="server" AssociatedControlID="txtFecha" Text="Fecha" />
+            <asp:TextBox ID="txtFecha" runat="server" TextMode="Date" />
+        </div>
+        <div class="campo">
+            <asp:Label runat="server" AssociatedControlID="ddlEstado" Text="Estado" />
+            <asp:DropDownList ID="ddlEstado" runat="server">
+                <asp:ListItem Text="Todos" Value="" />
+                <asp:ListItem Text="Nuevo" Value="Nuevo" />
+                <asp:ListItem Text="Reprogramado" Value="Reprogramado" />
+                <asp:ListItem Text="Cancelado" Value="Cancelado" />
+                <asp:ListItem Text="No asistio" Value="NoAsistio" />
+                <asp:ListItem Text="Cerrado" Value="Cerrado" />
+            </asp:DropDownList>
+        </div>
+        <asp:Button ID="btnBuscar" runat="server" Text="Buscar" OnClick="Filtrar_Click" />
+        <asp:Button ID="btnLimpiar" runat="server" Text="Limpiar" OnClick="Filtrar_Click" />
+    </asp:Panel>
     <asp:Label ID="lblMensaje" runat="server" CssClass="aviso" role="status" />
     <div class="tabla-contenedor">
         <asp:GridView ID="grilla" runat="server" AutoGenerateColumns="false" CssClass="tabla" EmptyDataText="Todavía no hay turnos cargados." OnRowCommand="grilla_RowCommand" OnRowDataBound="grilla_RowDataBound">

@@ -1,5 +1,6 @@
 using System;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Web.UI.WebControls;
 using ClinicaTurnos.Negocio;
 
@@ -20,6 +21,15 @@ namespace ClinicaTurnos.Web
 
                 CargarEspecialidades();
             }
+        }
+
+        protected void Filtrar_Click(object sender, EventArgs e)
+        {
+            if (sender == btnLimpiar)
+                txtBuscar.Text = "";
+
+            lblMensaje.Text = "";
+            CargarEspecialidades();
         }
 
         protected void grilla_RowCommand(object sender, GridViewCommandEventArgs e)
@@ -59,7 +69,10 @@ namespace ClinicaTurnos.Web
         {
             try
             {
-                grilla.DataSource = new EspecialidadNegocio().Listar();
+                string busqueda = txtBuscar.Text.Trim();
+                grilla.DataSource = new EspecialidadNegocio().Listar()
+                    .Where(especialidad => especialidad.Nombre.IndexOf(busqueda, StringComparison.CurrentCultureIgnoreCase) >= 0)
+                    .ToList();
                 grilla.DataBind();
             }
             catch (SqlException)

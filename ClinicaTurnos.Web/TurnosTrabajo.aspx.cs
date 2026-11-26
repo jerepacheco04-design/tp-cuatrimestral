@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Web.UI.WebControls;
 using ClinicaTurnos.Dominio;
 using ClinicaTurnos.Negocio;
@@ -23,6 +24,15 @@ namespace ClinicaTurnos.Web
 
                 CargarHorarios();
             }
+        }
+
+        protected void Filtrar_Click(object sender, EventArgs e)
+        {
+            if (sender == btnLimpiar)
+                txtBuscar.Text = "";
+
+            lblMensaje.Text = "";
+            CargarHorarios();
         }
 
         protected void grilla_RowCommand(object sender, GridViewCommandEventArgs e)
@@ -99,7 +109,10 @@ namespace ClinicaTurnos.Web
         {
             try
             {
-                grilla.DataSource = new TurnoTrabajoNegocio().Listar();
+                string busqueda = txtBuscar.Text.Trim();
+                grilla.DataSource = new TurnoTrabajoNegocio().Listar()
+                    .Where(horario => horario.Nombre.IndexOf(busqueda, StringComparison.CurrentCultureIgnoreCase) >= 0)
+                    .ToList();
                 grilla.DataBind();
             }
             catch (SqlException)
