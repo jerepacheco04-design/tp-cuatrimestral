@@ -48,7 +48,7 @@ namespace ClinicaTurnos.Web
                 }
                 catch (SqlException)
                 {
-                    lblMensaje.Text = "No se pudo cargar el horario. Ejecutá el script de base de datos y revisá la conexión.";
+                    lblMensaje.Text = "No se pudo cargar el horario.";
                     btnGuardar.Enabled = false;
                 }
             }
@@ -91,7 +91,7 @@ namespace ClinicaTurnos.Web
             }
             catch (SqlException)
             {
-                lblMensaje.Text = "No se pudieron guardar los cambios. Ejecutá el script de base de datos y revisá la conexión.";
+                lblMensaje.Text = "No se pudieron guardar los cambios.";
             }
         }
 

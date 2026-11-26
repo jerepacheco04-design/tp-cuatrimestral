@@ -61,7 +61,7 @@ namespace ClinicaTurnos.Web
             }
             catch (SqlException)
             {
-                lblMensaje.Text = "No se pudo cargar el formulario. Revisá la base de datos.";
+                lblMensaje.Text = "No se pudo cargar el formulario del turno.";
                 btnGuardar.Enabled = false;
             }
         }
@@ -115,7 +115,7 @@ namespace ClinicaTurnos.Web
             }
             catch (SqlException)
             {
-                lblMensaje.Text = "No se pudieron cargar los médicos. Revisá la base de datos.";
+                lblMensaje.Text = "No se pudieron cargar los médicos.";
             }
         }
 
@@ -140,7 +140,7 @@ namespace ClinicaTurnos.Web
             }
             catch (SqlException)
             {
-                lblMensaje.Text = "No se pudieron cargar las sugerencias.";
+                lblMensaje.Text = "No se pudieron buscar horarios disponibles.";
             }
         }
 
@@ -201,7 +201,7 @@ namespace ClinicaTurnos.Web
             }
             catch (SqlException)
             {
-                lblMensaje.Text = "No se pudieron cargar los horarios.";
+                lblMensaje.Text = "No se pudieron cargar los horarios disponibles.";
             }
         }
 

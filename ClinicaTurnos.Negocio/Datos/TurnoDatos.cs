@@ -11,7 +11,7 @@ namespace ClinicaTurnos.Negocio.Datos
     {
         private readonly string cadenaConexion = ConfigurationManager.ConnectionStrings["ClinicaTurnos"].ConnectionString;
 
-        public List<Turno> Listar(int? id = null)
+        public List<Turno> Listar(int? id = null, int? medicoId = null)
         {
             List<Turno> turnos = new List<Turno>();
             string consulta = @"SELECT t.Id, t.FechaHora, t.Estado, t.MotivoConsulta, t.ObservacionesDiagnostico,
@@ -22,13 +22,15 @@ namespace ClinicaTurnos.Negocio.Datos
                                INNER JOIN dbo.Pacientes p ON p.Id = t.PacienteId
                                INNER JOIN dbo.Medicos m ON m.Id = t.MedicoId
                                INNER JOIN dbo.Especialidades e ON e.Id = t.EspecialidadId
-                               WHERE @Id IS NULL OR t.Id = @Id
+                               WHERE (@Id IS NULL OR t.Id = @Id)
+                                 AND (@MedicoId IS NULL OR m.Id = @MedicoId)
                                ORDER BY t.FechaHora, t.Id";
 
             using (SqlConnection conexion = new SqlConnection(cadenaConexion))
             using (SqlCommand comando = new SqlCommand(consulta, conexion))
             {
                 comando.Parameters.Add("@Id", SqlDbType.Int).Value = (object)id ?? DBNull.Value;
+                comando.Parameters.Add("@MedicoId", SqlDbType.Int).Value = (object)medicoId ?? DBNull.Value;
                 conexion.Open();
                 using (SqlDataReader lector = comando.ExecuteReader())
                 {
@@ -68,6 +70,29 @@ namespace ClinicaTurnos.Negocio.Datos
             }
 
             return turnos;
+        }
+
+        public List<Turno> ListarPorMedico(int medicoId)
+        {
+            return Listar(null, medicoId);
+        }
+
+        public void GuardarDiagnostico(int turnoId, int medicoId, string observaciones)
+        {
+            using (SqlConnection conexion = new SqlConnection(cadenaConexion))
+            using (SqlCommand comando = new SqlCommand(
+                @"UPDATE dbo.Turnos
+                  SET ObservacionesDiagnostico = @Observaciones
+                  WHERE Id = @Id AND MedicoId = @MedicoId AND Estado <> @Cancelado", conexion))
+            {
+                comando.Parameters.Add("@Observaciones", SqlDbType.NVarChar, 1000).Value = observaciones;
+                comando.Parameters.Add("@Id", SqlDbType.Int).Value = turnoId;
+                comando.Parameters.Add("@MedicoId", SqlDbType.Int).Value = medicoId;
+                comando.Parameters.Add("@Cancelado", SqlDbType.TinyInt).Value = (byte)EstadoTurno.Cancelado;
+                conexion.Open();
+                if (comando.ExecuteNonQuery() == 0)
+                    throw new InvalidOperationException("No se pudo guardar el diagnóstico de este turno.");
+            }
         }
 
         public void Agregar(Turno turno)

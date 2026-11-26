@@ -16,11 +16,7 @@
     <asp:Panel ID="pnlInicio" runat="server" Visible="false">
         <h1>Inicio</h1>
         <asp:Label ID="lblBienvenida" runat="server" />
-        <p>Administración de la clínica.</p>
-        <ul>
-            <li><a href="Pacientes.aspx">Pacientes</a></li>
-            <li><a href="Especialidades.aspx">Especialidades</a></li>
-            <li><a href="Turnos.aspx">Turnos</a></li>
-        </ul>
+        <p><asp:Label ID="lblDescripcionInicio" runat="server" /></p>
+        <asp:Label ID="lblMensajeInicio" runat="server" CssClass="aviso" role="status" />
     </asp:Panel>
 </asp:Content>

@@ -51,7 +51,7 @@ namespace ClinicaTurnos.Web
                 lblMensaje.CssClass = "aviso";
                 lblMensaje.Text = ex.Number == 547
                     ? "No se puede eliminar la especialidad porque tiene médicos asignados."
-                    : "No se pudo eliminar la especialidad. Revisá la conexión a la base de datos.";
+                    : "No se pudo eliminar la especialidad. Intentá nuevamente.";
             }
         }
 
@@ -65,7 +65,7 @@ namespace ClinicaTurnos.Web
             catch (SqlException)
             {
                 lblMensaje.CssClass = "aviso";
-                lblMensaje.Text = "No se pudieron cargar los datos. Revisá la conexión a la base de datos.";
+                lblMensaje.Text = "No se pudieron cargar las especialidades.";
             }
         }
     }

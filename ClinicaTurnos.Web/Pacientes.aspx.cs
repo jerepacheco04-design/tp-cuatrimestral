@@ -25,7 +25,7 @@ namespace ClinicaTurnos.Web
                 catch (SqlException)
                 {
                     lblMensaje.CssClass = "aviso";
-                    lblMensaje.Text = "No se pudieron cargar los datos. Revisá la conexión a la base de datos.";
+                    lblMensaje.Text = "No se pudieron cargar los pacientes.";
                 }
             }
         }
@@ -55,7 +55,7 @@ namespace ClinicaTurnos.Web
             }
             catch (SqlException)
             {
-                lblMensaje.Text = "No se pudo eliminar el paciente. Revisá la base de datos e intentá nuevamente.";
+                lblMensaje.Text = "No se pudo eliminar el paciente. Intentá nuevamente.";
             }
         }
     }

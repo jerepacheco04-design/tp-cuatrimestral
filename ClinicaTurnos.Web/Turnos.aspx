@@ -1,7 +1,7 @@
 <%@ Page Title="Turnos" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Turnos.aspx.cs" Inherits="ClinicaTurnos.Web.Turnos" %>
 <asp:Content ID="contenido" ContentPlaceHolderID="ContenidoPrincipal" runat="server">
-    <h1>Turnos de pacientes</h1>
-    <p><a href="TurnoAlta.aspx">Agregar turno</a></p>
+    <h1><asp:Label ID="lblTitulo" runat="server" Text="Turnos de pacientes" /></h1>
+    <p><asp:HyperLink ID="linkAgregar" runat="server" NavigateUrl="~/TurnoAlta.aspx" Text="Agregar turno" /></p>
     <asp:Label ID="lblMensaje" runat="server" CssClass="aviso" role="status" />
     <div class="tabla-contenedor">
         <asp:GridView ID="grilla" runat="server" AutoGenerateColumns="false" CssClass="tabla" EmptyDataText="Todavía no hay turnos cargados." OnRowCommand="grilla_RowCommand" OnRowDataBound="grilla_RowDataBound">
@@ -21,6 +21,13 @@
                     <ItemTemplate><%#: NombreEstado(Eval("Estado")) %></ItemTemplate>
                 </asp:TemplateField>
                 <asp:BoundField DataField="MotivoConsulta" HeaderText="Motivo" />
+                <asp:TemplateField HeaderText="Diagnóstico">
+                    <ItemTemplate>
+                        <asp:Label ID="lblDiagnostico" runat="server" Text='<%#: Eval("ObservacionesDiagnostico") %>' />
+                        <asp:TextBox ID="txtDiagnostico" runat="server" Text='<%# Eval("ObservacionesDiagnostico") %>' TextMode="MultiLine" Rows="2" MaxLength="1000" />
+                        <asp:LinkButton ID="btnGuardarDiagnostico" runat="server" Text="Guardar diagnóstico" CommandName="GuardarDiagnostico" CommandArgument='<%# Eval("Id") %>' />
+                    </ItemTemplate>
+                </asp:TemplateField>
                 <asp:TemplateField HeaderText="Acciones">
                     <ItemTemplate>
                         <asp:HyperLink ID="linkReprogramar" runat="server" Text="Reprogramar" NavigateUrl='<%# "TurnoAlta.aspx?id=" + Eval("Id") %>' />

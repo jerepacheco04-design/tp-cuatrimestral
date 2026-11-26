@@ -12,12 +12,12 @@
         <header>
             <h2>Clínica médica</h2>
             <nav id="navPrincipal" runat="server">
-                <a href="<%= ResolveUrl("~/Default.aspx") %>">Inicio</a>
-                <a href="<%= ResolveUrl("~/Pacientes.aspx") %>">Pacientes</a>
-                <a href="<%= ResolveUrl("~/Especialidades.aspx") %>">Especialidades</a>
-                <a href="<%= ResolveUrl("~/TurnosTrabajo.aspx") %>">Horarios de trabajo</a>
-                <a href="<%= ResolveUrl("~/Medicos.aspx") %>">Médicos</a>
-                <a href="<%= ResolveUrl("~/Turnos.aspx") %>">Turnos</a>
+                <asp:HyperLink ID="linkInicio" runat="server" NavigateUrl="~/Default.aspx" Text="Inicio" />
+                <asp:HyperLink ID="linkPacientes" runat="server" NavigateUrl="~/Pacientes.aspx" Text="Pacientes" />
+                <asp:HyperLink ID="linkEspecialidades" runat="server" NavigateUrl="~/Especialidades.aspx" Text="Especialidades" />
+                <asp:HyperLink ID="linkHorarios" runat="server" NavigateUrl="~/TurnosTrabajo.aspx" Text="Horarios de trabajo" />
+                <asp:HyperLink ID="linkMedicos" runat="server" NavigateUrl="~/Medicos.aspx" Text="Médicos" />
+                <asp:HyperLink ID="linkTurnos" runat="server" NavigateUrl="~/Turnos.aspx" Text="Turnos" />
                 <asp:LinkButton ID="btnCerrarSesion" runat="server" OnClick="btnCerrarSesion_Click">Cerrar sesión</asp:LinkButton>
             </nav>
         </header>

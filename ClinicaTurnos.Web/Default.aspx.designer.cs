@@ -11,5 +11,7 @@ namespace ClinicaTurnos.Web
         protected global::System.Web.UI.WebControls.Button btnIngresar;
         protected global::System.Web.UI.WebControls.Panel pnlInicio;
         protected global::System.Web.UI.WebControls.Label lblBienvenida;
+        protected global::System.Web.UI.WebControls.Label lblDescripcionInicio;
+        protected global::System.Web.UI.WebControls.Label lblMensajeInicio;
     }
 }

@@ -48,7 +48,7 @@ namespace ClinicaTurnos.Web
             }
             catch (SqlException)
             {
-                lblMensaje.Text = "No se pudo cargar el formulario. Revisá la base de datos.";
+                lblMensaje.Text = "No se pudo cargar el formulario del médico.";
                 btnGuardar.Enabled = false;
             }
         }
@@ -116,7 +116,7 @@ namespace ClinicaTurnos.Web
             }
             catch (SqlException)
             {
-                lblMensaje.Text = "No se pudo guardar el médico. Revisá la base de datos.";
+                lblMensaje.Text = "No se pudo guardar el médico.";
             }
         }
 

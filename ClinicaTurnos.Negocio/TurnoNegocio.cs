@@ -15,6 +15,23 @@ namespace ClinicaTurnos.Negocio
             return datos.Listar();
         }
 
+        public List<Turno> ListarPorMedico(int medicoId)
+        {
+            ValidarId(medicoId);
+            return datos.ListarPorMedico(medicoId);
+        }
+
+        public void GuardarDiagnostico(int turnoId, int medicoId, string observaciones)
+        {
+            ValidarId(turnoId);
+            ValidarId(medicoId);
+            observaciones = (observaciones ?? "").Trim();
+            if (observaciones.Length == 0 || observaciones.Length > 1000)
+                throw new ArgumentException("Ingresá un diagnóstico de hasta 1000 caracteres.");
+
+            datos.GuardarDiagnostico(turnoId, medicoId, observaciones);
+        }
+
         public Turno Obtener(int id)
         {
             ValidarId(id);

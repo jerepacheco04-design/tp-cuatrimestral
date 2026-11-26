@@ -55,7 +55,7 @@ namespace ClinicaTurnos.Web
             {
                 lblMensaje.Text = ex.Number == 547
                     ? "No se puede eliminar el horario porque tiene médicos asignados."
-                    : "No se pudo eliminar el horario. Revisá la conexión a la base de datos.";
+                    : "No se pudo eliminar el horario. Intentá nuevamente.";
             }
         }
 
@@ -105,7 +105,7 @@ namespace ClinicaTurnos.Web
             catch (SqlException)
             {
                 lblMensaje.CssClass = "aviso";
-                lblMensaje.Text = "No se pudieron cargar los horarios. Ejecutá el script de base de datos y revisá la conexión.";
+                lblMensaje.Text = "No se pudieron cargar los horarios.";
             }
         }
     }

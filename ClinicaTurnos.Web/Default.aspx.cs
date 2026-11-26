@@ -13,7 +13,17 @@ namespace ClinicaTurnos.Web
             pnlLogin.Visible = usuario == null;
             pnlInicio.Visible = usuario != null;
             if (usuario != null)
+            {
                 lblBienvenida.Text = "Bienvenido, " + Server.HtmlEncode(usuario.Nombre + " " + usuario.Apellido + ".");
+                lblDescripcionInicio.Text = usuario.Perfil == PerfilUsuario.Medico
+                    ? "Desde Mis turnos podés consultar tu agenda y completar el diagnóstico."
+                    : "Administración de la clínica.";
+                if (Session["MensajeAcceso"] is string mensaje)
+                {
+                    lblMensajeInicio.Text = Server.HtmlEncode(mensaje);
+                    Session.Remove("MensajeAcceso");
+                }
+            }
         }
 
         protected void btnIngresar_Click(object sender, EventArgs e)
@@ -40,7 +50,7 @@ namespace ClinicaTurnos.Web
             }
             catch (SqlException)
             {
-                lblMensaje.Text = "No se pudo iniciar sesión. Revisá la conexión con la base de datos.";
+                lblMensaje.Text = "No se pudo iniciar sesión. Intentá nuevamente más tarde.";
             }
         }
     }

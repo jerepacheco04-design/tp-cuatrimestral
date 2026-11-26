@@ -31,7 +31,7 @@ namespace ClinicaTurnos.Web
             catch (SqlException)
             {
                 lblMensaje.CssClass = "aviso";
-                lblMensaje.Text = "No se pudieron cargar los médicos. Revisá la base de datos.";
+                lblMensaje.Text = "No se pudieron cargar los médicos.";
             }
         }
 
@@ -64,7 +64,7 @@ namespace ClinicaTurnos.Web
             }
             catch (SqlException)
             {
-                lblMensaje.Text = "No se pudo eliminar el médico.";
+                lblMensaje.Text = "No se pudo eliminar el médico. Intentá nuevamente.";
             }
         }
     }

@@ -14,9 +14,11 @@ namespace ClinicaTurnos.Negocio.Datos
 
         public Usuario Autenticar(string nombreUsuario, string clave)
         {
-            const string consulta = @"SELECT Id, NombreUsuario, Nombre, Apellido, Email, Perfil, Activo, ClaveHash, ClaveSalt
-                                     FROM dbo.Usuarios
-                                     WHERE NombreUsuario = @NombreUsuario";
+            const string consulta = @"SELECT u.Id, u.NombreUsuario, u.Nombre, u.Apellido, u.Email, u.Perfil, u.Activo,
+                                            u.ClaveHash, u.ClaveSalt, m.Id AS MedicoId
+                                     FROM dbo.Usuarios u
+                                     LEFT JOIN dbo.Medicos m ON m.UsuarioId = u.Id
+                                     WHERE u.NombreUsuario = @NombreUsuario";
 
             using (SqlConnection conexion = new SqlConnection(cadenaConexion))
             using (SqlCommand comando = new SqlCommand(consulta, conexion))
@@ -41,7 +43,8 @@ namespace ClinicaTurnos.Negocio.Datos
                         Apellido = (string)lector["Apellido"],
                         Email = (string)lector["Email"],
                         Perfil = (PerfilUsuario)Convert.ToInt32(lector["Perfil"]),
-                        Activo = (bool)lector["Activo"]
+                        Activo = (bool)lector["Activo"],
+                        MedicoId = lector["MedicoId"] == DBNull.Value ? (int?)null : (int)lector["MedicoId"]
                     };
                 }
             }

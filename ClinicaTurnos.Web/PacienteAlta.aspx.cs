@@ -43,7 +43,7 @@ namespace ClinicaTurnos.Web
                 }
                 catch (SqlException)
                 {
-                    lblMensaje.Text = "No se pudo cargar el paciente. Revisá la conexión a la base de datos.";
+                    lblMensaje.Text = "No se pudo cargar el paciente.";
                     btnGuardar.Enabled = false;
                 }
             }
@@ -98,7 +98,7 @@ namespace ClinicaTurnos.Web
             }
             catch (SqlException)
             {
-                lblMensaje.Text = "No se pudieron guardar los cambios. Revisá la base de datos e intentá nuevamente.";
+                lblMensaje.Text = "No se pudieron guardar los cambios.";
             }
         }
 
