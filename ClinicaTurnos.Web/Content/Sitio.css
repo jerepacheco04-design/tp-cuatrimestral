@@ -7,6 +7,7 @@ h1 { font-size: 24px; }
 .tabla th, .tabla td { border: 1px solid #aaa; padding: 8px; text-align: left; }
 .tabla th { background: #eee; }
 .tabla-contenedor { overflow-x: auto; }
+.observacion { white-space: pre-wrap; overflow-wrap: anywhere; }
 .campo { margin-bottom: 14px; }
 .campo label { display: block; margin-bottom: 4px; }
 input[type=text], input[type=password], input[type=email], input[type=date], input[type=time], textarea { box-sizing: border-box; width: 320px; max-width: 100%; padding: 5px; font: inherit; }

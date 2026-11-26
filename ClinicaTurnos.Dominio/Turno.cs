@@ -11,14 +11,21 @@ namespace ClinicaTurnos.Dominio
         public Medico Medico { get; set; }
         public Especialidad Especialidad { get; set; }
         public Usuario Recepcionista { get; set; }
+        public string CargadoPor { get { return Recepcionista?.NombreUsuario; } }
         public DateTime FechaHora { get; set; }
         public EstadoTurno Estado { get; set; }
+        public string EstadoVisible { get { return Estado == EstadoTurno.NoAsistio ? "No asistió" : Estado.ToString(); } }
         public string MotivoConsulta { get; set; }
         public string ObservacionesDiagnostico { get; set; }
 
+        public bool EstaPendiente
+        {
+            get { return Estado == EstadoTurno.Nuevo || Estado == EstadoTurno.Reprogramado; }
+        }
+
         public bool PuedeCambiarAgenda(DateTime ahora)
         {
-            return FechaHora > ahora && (Estado == EstadoTurno.Nuevo || Estado == EstadoTurno.Reprogramado);
+            return FechaHora > ahora && EstaPendiente;
         }
     }
 }

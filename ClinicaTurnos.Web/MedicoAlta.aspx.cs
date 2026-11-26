@@ -66,6 +66,9 @@ namespace ClinicaTurnos.Web
             txtNombre.Text = medico.Nombre;
             txtApellido.Text = medico.Apellido;
             txtEmail.Text = medico.Email;
+            pnlAcceso.Visible = string.IsNullOrEmpty(medico.NombreUsuario);
+            if (!pnlAcceso.Visible)
+                lblAcceso.Text = "Usuario: " + Server.HtmlEncode(medico.NombreUsuario);
 
             ListItem horario = ddlHorario.Items.FindByValue(medico.TurnoTrabajo.Id.ToString());
             if (horario != null)
@@ -94,6 +97,7 @@ namespace ClinicaTurnos.Web
                 Nombre = txtNombre.Text,
                 Apellido = txtApellido.Text,
                 Email = txtEmail.Text,
+                NombreUsuario = pnlAcceso.Visible ? txtUsuarioMedico.Text : null,
                 TurnoTrabajo = new TurnoTrabajo { Id = horario },
                 Especialidades = listaEspecialidades.Items.Cast<ListItem>()
                     .Where(opcion => opcion.Selected)
@@ -102,7 +106,7 @@ namespace ClinicaTurnos.Web
             };
             try
             {
-                new MedicoNegocio().Guardar(medico);
+                new MedicoNegocio().Guardar(medico, pnlAcceso.Visible ? txtClaveMedico.Text : null);
                 Session["Mensaje"] = id == 0 ? "Médico agregado correctamente." : "Médico modificado correctamente.";
                 Response.Redirect("Medicos.aspx");
             }

@@ -109,12 +109,16 @@ BEGIN
     );
 END
 GO
+IF COL_LENGTH(N'dbo.Usuarios', N'ClaveIteraciones') IS NULL
+    ALTER TABLE dbo.Usuarios ADD ClaveIteraciones int NULL;
+GO
 IF COL_LENGTH(N'dbo.Medicos', N'UsuarioId') IS NULL
     ALTER TABLE dbo.Medicos ADD UsuarioId int NULL;
 GO
 IF NOT EXISTS (SELECT 1 FROM sys.foreign_keys WHERE name = N'FK_Medicos_Usuarios' AND parent_object_id = OBJECT_ID(N'dbo.Medicos'))
     ALTER TABLE dbo.Medicos ADD CONSTRAINT FK_Medicos_Usuarios FOREIGN KEY (UsuarioId) REFERENCES dbo.Usuarios(Id);
 GO
+SET QUOTED_IDENTIFIER ON;
 IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'UX_Medicos_UsuarioId' AND object_id = OBJECT_ID(N'dbo.Medicos'))
     CREATE UNIQUE INDEX UX_Medicos_UsuarioId ON dbo.Medicos(UsuarioId) WHERE UsuarioId IS NOT NULL;
 GO
@@ -217,4 +221,10 @@ BEGIN
         CONSTRAINT CK_Turnos_Estado CHECK (Estado BETWEEN 1 AND 5)
     );
 END
+GO
+IF COL_LENGTH(N'dbo.Turnos', N'RecepcionistaId') IS NULL
+    ALTER TABLE dbo.Turnos ADD RecepcionistaId int NULL;
+GO
+IF OBJECT_ID(N'dbo.FK_Turnos_Usuarios_Recepcionista', N'F') IS NULL
+    ALTER TABLE dbo.Turnos ADD CONSTRAINT FK_Turnos_Usuarios_Recepcionista FOREIGN KEY (RecepcionistaId) REFERENCES dbo.Usuarios(Id);
 GO

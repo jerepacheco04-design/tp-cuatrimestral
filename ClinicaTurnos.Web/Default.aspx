@@ -18,5 +18,13 @@
         <asp:Label ID="lblBienvenida" runat="server" />
         <p><asp:Label ID="lblDescripcionInicio" runat="server" /></p>
         <asp:Label ID="lblMensajeInicio" runat="server" CssClass="aviso" role="status" />
+        <asp:PlaceHolder ID="pnlInicioGestion" runat="server">
+            <ul>
+                <li><a href="Pacientes.aspx">Pacientes</a></li>
+                <li><a href="Medicos.aspx">Médicos</a></li>
+                <li><a href="Turnos.aspx">Turnos</a></li>
+            </ul>
+        </asp:PlaceHolder>
+        <asp:HyperLink ID="lnkMiAgenda" runat="server" NavigateUrl="~/MiAgenda.aspx" Text="Mi agenda" />
     </asp:Panel>
 </asp:Content>

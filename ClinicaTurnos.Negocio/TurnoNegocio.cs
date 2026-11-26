@@ -38,6 +38,54 @@ namespace ClinicaTurnos.Negocio
             return datos.Listar(id).FirstOrDefault();
         }
 
+        public List<Turno> ListarDelMedico(int medicoId)
+        {
+            return datos.Listar(medicoId: medicoId);
+        }
+
+        public Turno ObtenerDelMedico(int id, int medicoId)
+        {
+            ValidarId(id);
+            return datos.Listar(id, medicoId, incluirDiagnostico: true).FirstOrDefault();
+        }
+
+        public List<Turno> ListarHistorial(int pacienteId, int? medicoId)
+        {
+            ValidarId(pacienteId);
+            return datos.Listar(medicoId: medicoId, pacienteId: pacienteId, hasta: DateTime.Now, incluirDiagnostico: medicoId.HasValue)
+                .OrderByDescending(turno => turno.FechaHora).ThenByDescending(turno => turno.Id).ToList();
+        }
+
+        public void GuardarObservacion(int id, int medicoId, string observacion)
+        {
+            GuardarConsulta(id, medicoId, ValidarObservacion(observacion), null);
+        }
+
+        public void CerrarConsulta(int id, int medicoId, string observacion)
+        {
+            GuardarConsulta(id, medicoId, ValidarObservacion(observacion), EstadoTurno.Cerrado);
+        }
+
+        public void MarcarAusencia(int id, int medicoId)
+        {
+            GuardarConsulta(id, medicoId, null, EstadoTurno.NoAsistio);
+        }
+
+        private void GuardarConsulta(int id, int medicoId, string observacion, EstadoTurno? estado)
+        {
+            ValidarId(id);
+            if (!datos.GuardarConsulta(id, medicoId, observacion, estado))
+                throw new InvalidOperationException("La consulta no está disponible.");
+        }
+
+        private string ValidarObservacion(string observacion)
+        {
+            observacion = (observacion ?? "").Trim();
+            if (observacion.Length == 0 || observacion.Length > 1000)
+                throw new ArgumentException("Ingresá una observación de hasta 1000 caracteres.");
+            return observacion;
+        }
+
         public List<Medico> ListarMedicos(int especialidadId)
         {
             return new MedicoNegocio().Listar().FindAll(medico =>
@@ -112,6 +160,8 @@ namespace ClinicaTurnos.Negocio
         {
             if (turno == null)
                 throw new ArgumentException("Completá los datos del turno.");
+            if (turno.Recepcionista == null || turno.Recepcionista.Id <= 0)
+                throw new ArgumentException("Inicia sesion para registrar el turno.");
             if (turno.Paciente == null || turno.Paciente.Id <= 0)
                 throw new ArgumentException("Seleccioná un paciente.");
             if (turno.Especialidad == null || turno.Especialidad.Id <= 0)

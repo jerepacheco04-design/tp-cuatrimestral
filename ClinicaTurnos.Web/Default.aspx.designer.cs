@@ -13,5 +13,7 @@ namespace ClinicaTurnos.Web
         protected global::System.Web.UI.WebControls.Label lblBienvenida;
         protected global::System.Web.UI.WebControls.Label lblDescripcionInicio;
         protected global::System.Web.UI.WebControls.Label lblMensajeInicio;
+        protected global::System.Web.UI.WebControls.PlaceHolder pnlInicioGestion;
+        protected global::System.Web.UI.WebControls.HyperLink lnkMiAgenda;
     }
 }

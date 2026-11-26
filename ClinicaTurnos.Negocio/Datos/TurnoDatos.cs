@@ -11,19 +11,24 @@ namespace ClinicaTurnos.Negocio.Datos
     {
         private readonly string cadenaConexion = ConfigurationManager.ConnectionStrings["ClinicaTurnos"].ConnectionString;
 
-        public List<Turno> Listar(int? id = null, int? medicoId = null)
+        public List<Turno> Listar(int? id = null, int? medicoId = null, int? pacienteId = null,
+            DateTime? hasta = null, bool incluirDiagnostico = false)
         {
             List<Turno> turnos = new List<Turno>();
-            string consulta = @"SELECT t.Id, t.FechaHora, t.Estado, t.MotivoConsulta, t.ObservacionesDiagnostico,
+            string consulta = @"SELECT t.Id, t.FechaHora, t.Estado, t.MotivoConsulta,
+                                      CASE WHEN @IncluirDiagnostico = 1 THEN t.ObservacionesDiagnostico END AS ObservacionesDiagnostico,
                                       p.Id AS PacienteId, p.Dni, p.Nombre AS PacienteNombre, p.Apellido AS PacienteApellido,
                                       m.Id AS MedicoId, m.Nombre AS MedicoNombre, m.Apellido AS MedicoApellido, m.Matricula,
-                                      e.Id AS EspecialidadId, e.Nombre AS EspecialidadNombre
+                                      e.Id AS EspecialidadId, e.Nombre AS EspecialidadNombre,
+                                      u.Id AS RecepcionistaId, u.NombreUsuario AS UsuarioRecepcion
                                FROM dbo.Turnos t
                                INNER JOIN dbo.Pacientes p ON p.Id = t.PacienteId
                                INNER JOIN dbo.Medicos m ON m.Id = t.MedicoId
                                INNER JOIN dbo.Especialidades e ON e.Id = t.EspecialidadId
-                               WHERE (@Id IS NULL OR t.Id = @Id)
-                                 AND (@MedicoId IS NULL OR m.Id = @MedicoId)
+                               LEFT JOIN dbo.Usuarios u ON u.Id = t.RecepcionistaId AND @MedicoId IS NULL
+                               WHERE (@Id IS NULL OR t.Id = @Id) AND (@MedicoId IS NULL OR t.MedicoId = @MedicoId)
+                                 AND (@PacienteId IS NULL OR t.PacienteId = @PacienteId)
+                                 AND (@Hasta IS NULL OR t.FechaHora <= @Hasta)
                                ORDER BY t.FechaHora, t.Id";
 
             using (SqlConnection conexion = new SqlConnection(cadenaConexion))
@@ -31,6 +36,9 @@ namespace ClinicaTurnos.Negocio.Datos
             {
                 comando.Parameters.Add("@Id", SqlDbType.Int).Value = (object)id ?? DBNull.Value;
                 comando.Parameters.Add("@MedicoId", SqlDbType.Int).Value = (object)medicoId ?? DBNull.Value;
+                comando.Parameters.Add("@PacienteId", SqlDbType.Int).Value = (object)pacienteId ?? DBNull.Value;
+                comando.Parameters.Add("@Hasta", SqlDbType.DateTime2).Value = (object)hasta ?? DBNull.Value;
+                comando.Parameters.Add("@IncluirDiagnostico", SqlDbType.Bit).Value = incluirDiagnostico;
                 conexion.Open();
                 using (SqlDataReader lector = comando.ExecuteReader())
                 {
@@ -45,6 +53,11 @@ namespace ClinicaTurnos.Negocio.Datos
                             ObservacionesDiagnostico = lector["ObservacionesDiagnostico"] == DBNull.Value
                                 ? null
                                 : (string)lector["ObservacionesDiagnostico"],
+                            Recepcionista = lector["RecepcionistaId"] == DBNull.Value ? null : new Usuario
+                            {
+                                Id = (int)lector["RecepcionistaId"],
+                                NombreUsuario = (string)lector["UsuarioRecepcion"]
+                            },
                             Paciente = new Paciente
                             {
                                 Id = (int)lector["PacienteId"],
@@ -74,24 +87,34 @@ namespace ClinicaTurnos.Negocio.Datos
 
         public List<Turno> ListarPorMedico(int medicoId)
         {
-            return Listar(null, medicoId);
+            return Listar(medicoId: medicoId, incluirDiagnostico: true);
         }
 
         public void GuardarDiagnostico(int turnoId, int medicoId, string observaciones)
         {
+            if (!GuardarConsulta(turnoId, medicoId, observaciones, null))
+                throw new InvalidOperationException("No se pudo guardar el diagnóstico de este turno.");
+        }
+
+        public bool GuardarConsulta(int id, int medicoId, string observacion, EstadoTurno? estado)
+        {
+            const string consulta = @"UPDATE dbo.Turnos
+                                     SET ObservacionesDiagnostico = COALESCE(@Observacion, ObservacionesDiagnostico),
+                                         Estado = COALESCE(@Estado, Estado)
+                                     WHERE Id = @Id AND MedicoId = @MedicoId AND Estado IN (@Nuevo, @Reprogramado)
+                                       AND (@Estado IS NULL OR FechaHora <= @Ahora)";
             using (SqlConnection conexion = new SqlConnection(cadenaConexion))
-            using (SqlCommand comando = new SqlCommand(
-                @"UPDATE dbo.Turnos
-                  SET ObservacionesDiagnostico = @Observaciones
-                  WHERE Id = @Id AND MedicoId = @MedicoId AND Estado <> @Cancelado", conexion))
+            using (SqlCommand comando = new SqlCommand(consulta, conexion))
             {
-                comando.Parameters.Add("@Observaciones", SqlDbType.NVarChar, 1000).Value = observaciones;
-                comando.Parameters.Add("@Id", SqlDbType.Int).Value = turnoId;
+                comando.Parameters.Add("@Id", SqlDbType.Int).Value = id;
                 comando.Parameters.Add("@MedicoId", SqlDbType.Int).Value = medicoId;
-                comando.Parameters.Add("@Cancelado", SqlDbType.TinyInt).Value = (byte)EstadoTurno.Cancelado;
+                comando.Parameters.Add("@Observacion", SqlDbType.NVarChar, 1000).Value = (object)observacion ?? DBNull.Value;
+                comando.Parameters.Add("@Estado", SqlDbType.TinyInt).Value = estado.HasValue ? (object)(byte)estado.Value : DBNull.Value;
+                comando.Parameters.Add("@Nuevo", SqlDbType.TinyInt).Value = (byte)EstadoTurno.Nuevo;
+                comando.Parameters.Add("@Reprogramado", SqlDbType.TinyInt).Value = (byte)EstadoTurno.Reprogramado;
+                comando.Parameters.Add("@Ahora", SqlDbType.DateTime2).Value = DateTime.Now;
                 conexion.Open();
-                if (comando.ExecuteNonQuery() == 0)
-                    throw new InvalidOperationException("No se pudo guardar el diagnóstico de este turno.");
+                return comando.ExecuteNonQuery() == 1;
             }
         }
 
@@ -103,8 +126,11 @@ namespace ClinicaTurnos.Negocio.Datos
                 using (SqlTransaction transaccion = conexion.BeginTransaction(IsolationLevel.Serializable))
                 {
                     ValidarDisponibilidad(turno, conexion, transaccion);
-                    string consulta = @"INSERT INTO dbo.Turnos (PacienteId, MedicoId, EspecialidadId, FechaHora, Estado, MotivoConsulta)
-                                        OUTPUT INSERTED.Id VALUES (@Paciente, @Medico, @Especialidad, @FechaHora, @Estado, @Motivo)";
+                    string consulta = @"INSERT INTO dbo.Turnos (PacienteId, MedicoId, EspecialidadId, FechaHora, Estado, MotivoConsulta, RecepcionistaId)
+                                        OUTPUT INSERTED.Id
+                                        SELECT @Paciente, @Medico, @Especialidad, @FechaHora, @Estado, @Motivo, Id
+                                        FROM dbo.Usuarios
+                                        WHERE Id = @Usuario AND Activo = 1 AND Perfil IN (@Recepcionista, @Administrador)";
                     using (SqlCommand comando = new SqlCommand(consulta, conexion, transaccion))
                     {
                         comando.Parameters.Add("@Paciente", SqlDbType.Int).Value = turno.Paciente.Id;
@@ -113,7 +139,11 @@ namespace ClinicaTurnos.Negocio.Datos
                         comando.Parameters.Add("@FechaHora", SqlDbType.DateTime2).Value = turno.FechaHora;
                         comando.Parameters.Add("@Estado", SqlDbType.TinyInt).Value = (byte)EstadoTurno.Nuevo;
                         comando.Parameters.Add("@Motivo", SqlDbType.NVarChar, 500).Value = turno.MotivoConsulta;
-                        int id = (int)comando.ExecuteScalar();
+                        comando.Parameters.Add("@Usuario", SqlDbType.Int).Value = turno.Recepcionista.Id;
+                        comando.Parameters.Add("@Recepcionista", SqlDbType.TinyInt).Value = (byte)PerfilUsuario.Recepcionista;
+                        comando.Parameters.Add("@Administrador", SqlDbType.TinyInt).Value = (byte)PerfilUsuario.Administrador;
+                        if (!(comando.ExecuteScalar() is int id))
+                            throw new ArgumentException("Esta cuenta no puede registrar turnos.");
                         transaccion.Commit();
                         turno.Id = id;
                         turno.Estado = EstadoTurno.Nuevo;

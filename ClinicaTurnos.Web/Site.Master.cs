@@ -16,12 +16,13 @@ namespace ClinicaTurnos.Web
             bool esAdministrador = usuario.Perfil == PerfilUsuario.Administrador;
             bool esRecepcionista = usuario.Perfil == PerfilUsuario.Recepcionista;
             bool esMedico = usuario.Perfil == PerfilUsuario.Medico;
+            linkInicio.Visible = true;
             linkPacientes.Visible = esAdministrador || esRecepcionista;
             linkEspecialidades.Visible = esAdministrador;
             linkHorarios.Visible = esAdministrador;
             linkMedicos.Visible = esAdministrador || esRecepcionista;
-            linkTurnos.Visible = esAdministrador || esRecepcionista || (esMedico && usuario.MedicoId.HasValue);
-            linkTurnos.Text = esMedico ? "Mis turnos" : "Turnos";
+            linkTurnos.Visible = esAdministrador || esRecepcionista;
+            lnkMiAgenda.Visible = esMedico && usuario.MedicoId.HasValue;
         }
 
         protected void btnCerrarSesion_Click(object sender, EventArgs e)

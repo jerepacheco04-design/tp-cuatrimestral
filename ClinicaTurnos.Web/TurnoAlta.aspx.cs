@@ -233,6 +233,7 @@ namespace ClinicaTurnos.Web
                         Paciente = new Paciente { Id = LeerId(ddlPaciente) },
                         Especialidad = new Especialidad { Id = LeerId(ddlEspecialidad) },
                         Medico = new Medico { Id = LeerId(ddlMedico) },
+                        Recepcionista = UsuarioActual,
                         FechaHora = fechaHora,
                         MotivoConsulta = txtMotivo.Text
                     };

@@ -20,7 +20,7 @@ namespace ClinicaTurnos.Negocio
             return new MedicoDatos().Listar(id).Find(medico => medico.Id == id);
         }
 
-        public void Guardar(Medico medico)
+        public void Guardar(Medico medico, string clave = null)
         {
             if (medico == null)
                 throw new ArgumentException("Ingresá los datos del médico.");
@@ -42,9 +42,18 @@ namespace ClinicaTurnos.Negocio
             if (medico.Especialidades == null || medico.Especialidades.Count == 0)
                 throw new ArgumentException("Seleccioná al menos una especialidad.");
 
+            medico.NombreUsuario = (medico.NombreUsuario ?? "").Trim();
+            if (medico.NombreUsuario.Length > 0 || !string.IsNullOrEmpty(clave))
+            {
+                if (!Regex.IsMatch(medico.NombreUsuario, @"^[a-zA-Z0-9._-]{3,50}$"))
+                    throw new ArgumentException("Ingresá de 3 a 50 caracteres para el usuario. Usá letras, números, punto, guion o guion bajo.");
+                if (string.IsNullOrWhiteSpace(clave) || clave.Length < 12 || clave.Length > 100)
+                    throw new ArgumentException("La contraseña del médico debe tener entre 12 y 100 caracteres.");
+            }
+
             try
             {
-                new MedicoDatos().Guardar(medico);
+                new MedicoDatos().Guardar(medico, clave);
             }
             catch (SqlException ex) when (ex.Number == 2627 || ex.Number == 2601)
             {
