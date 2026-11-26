@@ -25,8 +25,7 @@ namespace ClinicaTurnos.Web
             {
                 if (usuario == null)
                 {
-                    Response.Redirect("~/Default.aspx", false);
-                    Context.ApplicationInstance.CompleteRequest();
+                    Response.Redirect("~/Default.aspx");
                     return;
                 }
 
@@ -34,9 +33,11 @@ namespace ClinicaTurnos.Web
                     (EsPaginaMedico && usuario.Perfil != PerfilUsuario.Medico) ||
                     (usuario.Perfil == PerfilUsuario.Medico && (!usuario.MedicoId.HasValue || !PermiteMedico)))
                 {
-                    Session["MensajeAcceso"] = "No tenés permiso para entrar a esa sección.";
-                    Response.Redirect(usuario.Perfil == PerfilUsuario.Medico ? "~/MiAgenda.aspx" : "~/Default.aspx", false);
-                    Context.ApplicationInstance.CompleteRequest();
+                    if (usuario.Perfil == PerfilUsuario.Medico && usuario.MedicoId.HasValue)
+                        Response.Redirect("~/MiAgenda.aspx");
+
+                    Session["MensajeAcceso"] = "No tenes permiso para entrar.";
+                    Response.Redirect("~/Default.aspx");
                     return;
                 }
             }

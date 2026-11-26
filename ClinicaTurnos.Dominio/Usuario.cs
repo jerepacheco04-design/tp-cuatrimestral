@@ -10,6 +10,5 @@ namespace ClinicaTurnos.Dominio
         public PerfilUsuario Perfil { get; set; }
         public int? MedicoId { get; set; }
         public bool Activo { get; set; }
-        public int? MedicoId { get; set; }
     }
 }
