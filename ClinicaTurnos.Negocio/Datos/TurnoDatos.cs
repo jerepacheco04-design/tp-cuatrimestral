@@ -12,7 +12,7 @@ namespace ClinicaTurnos.Negocio.Datos
         private readonly string cadenaConexion = ConfigurationManager.ConnectionStrings["ClinicaTurnos"].ConnectionString;
 
         public List<Turno> Listar(int? id = null, int? medicoId = null, int? pacienteId = null,
-            DateTime? hasta = null, bool incluirDiagnostico = false)
+            DateTime? hasta = null, bool incluirDiagnostico = false, DateTime? fecha = null)
         {
             List<Turno> turnos = new List<Turno>();
             string consulta = @"SELECT t.Id, t.FechaHora, t.Estado, t.MotivoConsulta,
@@ -29,6 +29,7 @@ namespace ClinicaTurnos.Negocio.Datos
                                WHERE (@Id IS NULL OR t.Id = @Id) AND (@MedicoId IS NULL OR t.MedicoId = @MedicoId)
                                  AND (@PacienteId IS NULL OR t.PacienteId = @PacienteId)
                                  AND (@Hasta IS NULL OR t.FechaHora <= @Hasta)
+                                 AND (@Fecha IS NULL OR (t.FechaHora >= @Fecha AND t.FechaHora < DATEADD(day, 1, @Fecha)))
                                ORDER BY t.FechaHora, t.Id";
 
             using (SqlConnection conexion = new SqlConnection(cadenaConexion))
@@ -38,6 +39,7 @@ namespace ClinicaTurnos.Negocio.Datos
                 comando.Parameters.Add("@MedicoId", SqlDbType.Int).Value = (object)medicoId ?? DBNull.Value;
                 comando.Parameters.Add("@PacienteId", SqlDbType.Int).Value = (object)pacienteId ?? DBNull.Value;
                 comando.Parameters.Add("@Hasta", SqlDbType.DateTime2).Value = (object)hasta ?? DBNull.Value;
+                comando.Parameters.Add("@Fecha", SqlDbType.Date).Value = fecha.HasValue ? (object)fecha.Value.Date : DBNull.Value;
                 comando.Parameters.Add("@IncluirDiagnostico", SqlDbType.Bit).Value = incluirDiagnostico;
                 conexion.Open();
                 using (SqlDataReader lector = comando.ExecuteReader())

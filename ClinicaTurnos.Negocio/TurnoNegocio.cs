@@ -38,9 +38,9 @@ namespace ClinicaTurnos.Negocio
             return datos.Listar(id).FirstOrDefault();
         }
 
-        public List<Turno> ListarDelMedico(int medicoId)
+        public List<Turno> ListarDelMedico(int medicoId, DateTime? fecha = null)
         {
-            return datos.Listar(medicoId: medicoId);
+            return datos.Listar(medicoId: medicoId, fecha: fecha);
         }
 
         public Turno ObtenerDelMedico(int id, int medicoId)
